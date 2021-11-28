@@ -3,14 +3,34 @@ import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import { NextSeo } from "next-seo";
 
-const generateImageGallery = (length = 13) => {
+type Presse = { year: number; length: number; alt: string };
+
+const Presse1998: Presse = {
+  year: 98,
+  length: 4,
+  alt: "Articles de presse publiés en 1998 sur Jean-Baptiste Croizet, curé de Neschers et paléontologue.",
+};
+
+const Presse1992: Presse = {
+  year: 92,
+  length: 3,
+  alt: "Articles de presse publiés en 1998 sur L’Histoire de Neschers de l'an 1830 à nos jours.",
+};
+
+const Presse2017: Presse = {
+  year: 17,
+  length: 1,
+  alt: "Article de presse sortie en 1998 sur Quelques notes prises au fil du temps sur Plauzat et ses villages voisins.",
+};
+
+const generateImageGallery = (presse: Presse) => {
   const images = [];
-  for (let i = 1; i <= length; i++) {
+  for (let i = 1; i <= presse.length; i++) {
     images.push({
-      original: `/img/image${i}.jpg`,
-      thumbnail: `/img/image${i}.jpg`,
-      originalAlt: "Michel Golfier - Écrivain auvergnat",
-      thumbnailAlt: "Michel Golfier - Écrivain auvergnat",
+      original: `/img/Presse_${presse.year}_Page_${i}.jpg`,
+      thumbnail: `/img/Presse_${presse.year}_Page_${i}.jpg`,
+      originalAlt: presse.alt,
+      thumbnailAlt: presse.alt,
     });
   }
   return images;
@@ -55,7 +75,7 @@ const Page: NextPage = () => {
       />
       <div>
         <ImageGallery
-          items={generateImageGallery()}
+          items={generateImageGallery(Presse1992)}
           useBrowserFullscreen={true}
         />
       </div>
