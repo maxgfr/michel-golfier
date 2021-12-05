@@ -1,6 +1,4 @@
 import type { NextPage } from "next";
-import ImageGallery from "react-image-gallery";
-import "react-image-gallery/styles/css/image-gallery.css";
 import { NextSeo } from "next-seo";
 
 const generateImageGallery = (length = 13) => {
@@ -54,10 +52,10 @@ const Page: NextPage = () => {
         }}
       />
       <div>
-        <ImageGallery
+        {/* <ImageGallery
           items={generateImageGallery()}
           useBrowserFullscreen={true}
-        />
+        /> */}
       </div>
     </>
   );
