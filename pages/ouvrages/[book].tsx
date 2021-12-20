@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@chakra-ui/button";
 import { Box, Stack, Link, Text } from "@chakra-ui/layout";
 import xss from "xss";
@@ -20,6 +20,8 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
 } from "@chakra-ui/number-input";
+import { Layout } from "../../src/components/layout";
+import { useDimensions } from "../../src/hooks/useDimensions";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 type Presse = {
@@ -38,7 +40,7 @@ const Presse1992: Presse = {
   summary:
     "J'ai essayé dans cette monographie, de faire resurgir les racines d'un passé, images lointaines et fugaces, mais pourtant si proches de nous sur l'humaine condition. De souffrance en joie, de désespoir en espérance, de recul en progrès, l'homme traversa avec courage les épreuves du temps. Cette monographie n'aurait pu voir le jour sans la consultation évidente de plusieurs centaines de pages de délibérations des différents conseils municipaux du village de Neschers qui se sont succédés depuis plus de 150 ans, d'archives privées, ainsi que d'actes notariés.",
   additionalInformation:
-    "<p>Je ne saurai trop vous recommander le site « Fontaines de France » impressionnant panorama sur la richesse artistique, sculptures sortant des mains d'habiles artistes régionaux ou nationaux, fontaines aux multiples aspects, monuments présentant une très grande variété de formes et de styles, des plus complexes au plus épurés, alliant à la fois beauté et simplicité. Tailler, ciseler, façonner, tels furent les maîtres mots de nos virtuoses du temps jadis, mais aussi de nos contemporains, où fontaines et « l'eau symbole de vie » sont intimement liés dans une unique et profonde harmonie. Actuellement 2868 fontaines sont recensées dans 1617 villes.</p>",
+    "<em>Je ne saurais trop vous recommander le site « Fontaines de France » impressionnant panorama sur la richesse artistique, sculptures sortant des mains d'habiles artistes régionaux ou nationaux, fontaines aux multiples aspects, monuments présentant une très grande variété de formes et de styles, des plus complexes au plus épurés, alliant à la fois beauté et simplicité. Tailler, ciseler, façonner, tels furent les maîtres mots de nos virtuoses du temps jadis, mais aussi de nos contemporains, où fontaines et « l'eau symbole de vie » sont intimement liés dans une unique et profonde harmonie. Actuellement 2868 fontaines sont recensées dans 1617 villes.</em>",
   images: [
     {
       source: `/img/Presse_92_Page_1.jpg`,
@@ -106,6 +108,9 @@ const Page: NextPage = () => {
   const router = useRouter();
   const [book, setBook] = useState<Presse>(Presse2017);
   const [sliderValue, setSliderValue] = useState<string | number>("1");
+  const [selectedItem, setSelectedItem] = useState<number>(0);
+  const targetRef = useRef<HTMLDivElement>(null);
+  const size = useDimensions(targetRef);
 
   useEffect(() => {
     switch (router.query.book) {
@@ -152,42 +157,91 @@ const Page: NextPage = () => {
   };
 
   return (
-    <Box display="flex" flexDirection="column">
-      <Box display="flex" justifyContent="row">
+    <Layout>
+      <Box display="flex" flexDirection={{ base: "column", lg: "row" }}>
         <Box
+          ref={targetRef}
           flex={1}
           display="flex"
-          alignItems="center"
           justifyContent="center"
+          maxWidth={{ base: "90vw", lg: "45vw" }}
+          marginRight="2rem"
         >
           <Document file={book.path} onLoadSuccess={onDocumentLoadSuccess}>
-            <Pdf pageNumber={pageNumber} />
+            <Pdf
+              pageNumber={pageNumber}
+              width={size.width}
+              height={size.height}
+            />
           </Document>
         </Box>
         <Box display="flex" flexDirection="column" alignItems="center" flex={1}>
-          <Text marginTop="2rem">
-            Page {pageNumber} sur {numPages}
+          <Text as="h1" fontFamily="Oooh Baby" fontWeight="600" fontSize="4xl">
+            {book.title}
           </Text>
-
-          <NumberInput
-            defaultValue={1}
-            min={1}
-            max={numPages}
-            value={sliderValue}
-            onChange={onInputChange}
+          <Text
+            fontFamily="Oooh Baby"
+            fontWeight="600"
+            fontSize="3xl"
+            alignSelf="flex-start"
             marginTop="2rem"
+            as="h2"
           >
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
+            Résumé
+          </Text>
+          <Box
+            dangerouslySetInnerHTML={{ __html: xss(book.summary) }}
+            marginTop="1rem"
+          />
+          <Text
+            fontFamily="Oooh Baby"
+            fontWeight="600"
+            fontSize="3xl"
+            alignSelf="flex-start"
+            marginTop="2rem"
+            as="h2"
+          >
+            Note
+          </Text>
+          <Box
+            dangerouslySetInnerHTML={{
+              __html: xss(book.additionalInformation),
+            }}
+            alignSelf="flex-start"
+            marginTop="1rem"
+          />
 
           <Link href={book.path} isExternal marginTop="2rem">
             Ouvrir ou télécharger le livre
-            <ExternalLinkIcon mx="2px" />
+            <ExternalLinkIcon mx="5px" />
           </Link>
+
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            alignItems="center"
+            marginTop="2rem"
+          >
+            <NumberInput
+              defaultValue={1}
+              min={1}
+              max={numPages}
+              value={sliderValue}
+              onChange={onInputChange}
+            >
+              <NumberInputField />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+
+            <Text marginLeft={5}>
+              Page {pageNumber} sur {numPages}
+            </Text>
+          </Box>
+
           <Stack
             direction="row"
             spacing={4}
@@ -197,7 +251,6 @@ const Page: NextPage = () => {
           >
             <Button
               leftIcon={<ArrowLeftIcon />}
-              colorScheme="teal"
               variant="solid"
               onClick={onGoBack}
             >
@@ -205,50 +258,81 @@ const Page: NextPage = () => {
             </Button>
             <Button
               rightIcon={<ArrowRightIcon />}
-              colorScheme="teal"
               variant="solid"
               onClick={onGoNext}
             >
               Page suivante
             </Button>
           </Stack>
-          <Box
-            dangerouslySetInnerHTML={{ __html: xss(book.summary) }}
-            marginTop="2rem"
-          />
-
-          <Box
-            dangerouslySetInnerHTML={{
-              __html: xss(book.additionalInformation),
-            }}
-            alignSelf="flex-start"
-            marginTop="1rem"
-          />
         </Box>
       </Box>
       <Box
-        width={{ base: "100vw", md: "80vw", lg: "60vw" }}
-        height="100vh"
-        alignSelf="center"
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        marginTop="2rem"
       >
-        <Carousel
-          ariaLabel="Carousel d'images"
-          infiniteLoop={true}
-          autoPlay={false}
+        <Text
+          as="h2"
+          fontFamily="Oooh Baby"
+          fontWeight="600"
+          fontSize="4xl"
+          textAlign="center"
         >
-          {book.images.map((img, index) => (
-            <Image
-              key={index}
-              src={img.source}
-              alt={img.alt}
-              layout="responsive"
-              width="100%"
-              height="100%"
-            />
-          ))}
-        </Carousel>
+          Presse
+        </Text>
+
+        {book.images.length > 1 && (
+          <Stack
+            direction="row"
+            spacing={4}
+            alignItems="center"
+            justifyContent="center"
+            marginTop="2rem"
+          >
+            <Button
+              leftIcon={<ArrowLeftIcon />}
+              variant="solid"
+              onClick={() => setSelectedItem(selectedItem - 1)}
+            >
+              Article précédent
+            </Button>
+            <Button
+              rightIcon={<ArrowRightIcon />}
+              variant="solid"
+              onClick={() => setSelectedItem(selectedItem + 1)}
+            >
+              Article suivant
+            </Button>
+          </Stack>
+        )}
+        <Box
+          width={{ base: "100%", md: "80vw", lg: "60vw" }}
+          height="auto"
+          alignSelf="center"
+          marginTop="1rem"
+        >
+          <Carousel
+            ariaLabel="Carousel d'images"
+            infiniteLoop={true}
+            autoPlay={false}
+            onChange={v => setSelectedItem(v)}
+            selectedItem={selectedItem}
+          >
+            {book.images.map((img, index) => (
+              <Image
+                key={index}
+                src={img.source}
+                alt={img.alt}
+                layout="responsive"
+                width="100%"
+                height="100%"
+              />
+            ))}
+          </Carousel>
+        </Box>
       </Box>
-    </Box>
+    </Layout>
   );
 };
 
