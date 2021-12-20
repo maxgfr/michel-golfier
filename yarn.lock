@@ -784,15 +784,15 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@fontsource/baloo-bhaijaan-2@^4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@fontsource/baloo-bhaijaan-2/-/baloo-bhaijaan-2-4.5.2.tgz#723ba75727fcd3f16635030c5e44cb5cdaebb8e5"
+  integrity sha512-EqHAhc78SobyF9gZuKxFvKoLZe9V7/fNvenWCfCA+YKD3gA2/QhlSx/79t119myfRjGmh48M3rRHvCKZ4Wbpyg==
+
 "@fontsource/oooh-baby@^4.5.0":
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/@fontsource/oooh-baby/-/oooh-baby-4.5.0.tgz#08b595809bb0775d2a4511cffa47bf9b23b4fdde"
   integrity sha512-3nR34vpZy9Vuov/V9MonxeI9MjRWfuSUhaMeq6qG96l6/LO06cfvV4YYHlp2vGKFqA5CI0/rMxU3DpMRqhOCWg==
-
-"@fontsource/open-sans@^4.5.2":
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/@fontsource/open-sans/-/open-sans-4.5.2.tgz#6953650035d5b42be645013b1465544d0af49d7d"
-  integrity sha512-aDQrW8s0KslG2aKb9nM5R6fiQR9iPomqWXf6iZCC30qv/UFlSY14SppodA3rE//+w37EqsJjyUq3BSEYzLdisg==
 
 "@hapi/accept@5.0.2":
   version "5.0.2"
