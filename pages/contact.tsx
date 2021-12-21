@@ -6,6 +6,7 @@ import {
   FormLabel,
   Input,
   Text,
+  Textarea,
 } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { Layout } from "../src/components/layout";
@@ -85,7 +86,11 @@ const Page: NextPage = () => {
                   mt={4}
                 >
                   <FormLabel htmlFor="message">Message</FormLabel>
-                  <Input {...field} id="message" placeholder="Votre message" />
+                  <Textarea
+                    {...field}
+                    id="message"
+                    placeholder="Votre message"
+                  />
                   <FormErrorMessage>{form.errors.message}</FormErrorMessage>
                 </FormControl>
               )}
