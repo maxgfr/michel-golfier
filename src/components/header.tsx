@@ -58,7 +58,6 @@ export function Header({ title, links }: Props): JSX.Element {
         flexDirection="row"
         justifyContent="space-between"
         borderBottomWidth={1}
-        paddingY={2}
         height={HeaderHeight}
       >
         <Box

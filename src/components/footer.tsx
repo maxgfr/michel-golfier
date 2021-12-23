@@ -7,13 +7,10 @@ export const FooterHeight = "4rem";
 export function Footer(): JSX.Element {
   return (
     <Box
-      position="relative"
       display="flex"
-      flexDirection="column"
       justifyContent="center"
       alignItems="center"
       borderTopWidth={1}
-      paddingY={5}
       height={FooterHeight}
     >
       <Link href="https://github.com/maxgfr/michel-golfier" isExternal>
