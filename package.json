@@ -18,6 +18,7 @@
     "framer-motion": "^4",
     "next": "12.0.4",
     "next-seo": "^4.28.1",
+    "nodemailer": "^6.7.2",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-pdf": "^5.5.0",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@types/node": "16.11.10",
+    "@types/nodemailer": "^6.4.4",
     "@types/react": "17.0.37",
     "@types/react-pdf": "^5.0.9",
     "eslint": "7.32.0",

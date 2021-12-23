@@ -13,6 +13,7 @@ import { Layout } from "../src/components/layout";
 import { Formik, Form, Field } from "formik";
 
 import * as Yup from "yup";
+import { useState } from "react";
 
 const FormSchema = Yup.object().shape({
   name: Yup.string()
@@ -33,14 +34,41 @@ type FormValues = {
   message: string;
 };
 
+enum Status {
+  SUCCESS,
+  ERROR,
+  IDLE,
+}
+
 const Page: NextPage = () => {
   const initialValues: FormValues = { name: "", email: "", message: "" };
+  const [status, setStatus] = useState<Status>(Status.IDLE);
 
-  const onSubmit = (values: FormValues, actions: any): void => {
-    setTimeout(() => {
-      alert(JSON.stringify(values, null, 2));
-      actions.setSubmitting(false);
-    }, 1000);
+  const onSubmit = async (values: FormValues, actions: any): Promise<void> => {
+    setStatus(Status.IDLE);
+    await fetch("/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    })
+      .then(response => {
+        console.log(response);
+        if (response.ok) {
+          return response.json();
+        }
+        return Promise.reject(response);
+      })
+      .then(() => {
+        setStatus(Status.SUCCESS);
+      })
+      .catch(() => {
+        setStatus(Status.ERROR);
+      })
+      .finally(() => {
+        actions.setSubmitting(false);
+      });
   };
 
   return (
@@ -61,7 +89,7 @@ const Page: NextPage = () => {
                   isInvalid={form.errors.name && form.touched.name}
                   mt={4}
                 >
-                  <FormLabel htmlFor="name">Prénom</FormLabel>
+                  <FormLabel htmlFor="name">Nom</FormLabel>
                   <Input {...field} id="name" placeholder="Votre nom" />
                   <FormErrorMessage>{form.errors.name}</FormErrorMessage>
                 </FormControl>
@@ -98,6 +126,22 @@ const Page: NextPage = () => {
             <Button mt={8} isLoading={props.isSubmitting} type="submit">
               Envoyer mon message
             </Button>
+            {status === Status.SUCCESS && (
+              <Box mt={4}>
+                <Text color="#267808" fontWeight="600">
+                  Votre message a bien été envoyé, je vous répondrai dans les
+                  plus brefs délais.
+                </Text>
+              </Box>
+            )}
+            {status === Status.ERROR && (
+              <Box mt={4}>
+                <Text color="#e71313" fontWeight="600">
+                  Une erreur est survenue lors de l&apos;envoi de votre message,
+                  veuillez réessayer plus tard.
+                </Text>
+              </Box>
+            )}
           </Form>
         )}
       </Formik>
