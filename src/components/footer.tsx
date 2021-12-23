@@ -1,5 +1,5 @@
-import { ExternalLinkIcon, HamburgerIcon } from "@chakra-ui/icons";
-import { Box, Text, Link } from "@chakra-ui/react";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
+import { Box, Link } from "@chakra-ui/react";
 import React from "react";
 
 export const FooterHeight = "4rem";

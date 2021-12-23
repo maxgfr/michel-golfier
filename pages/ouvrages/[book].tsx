@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "@chakra-ui/button";
 import { Box, Stack, Link, Text } from "@chakra-ui/layout";
 import xss from "xss";
@@ -10,9 +10,8 @@ import {
 import Image from "next/image";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
-import type { NextPage } from "next";
+import type { GetServerSidePropsContext, NextPage } from "next";
 import { Document, Page as Pdf, pdfjs } from "react-pdf";
-import { useRouter } from "next/dist/client/router";
 import {
   NumberInput,
   NumberInputField,
@@ -24,7 +23,7 @@ import { Layout } from "../../src/components/layout";
 import { useDimensions } from "../../src/hooks/useDimensions";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
-type Presse = {
+type Book = {
   key: string;
   title: string;
   path: string;
@@ -33,7 +32,7 @@ type Presse = {
   images: Array<{ source: string; alt: string }>;
 };
 
-const Presse1992: Presse = {
+const Book1992: Book = {
   key: "l-histoire-de-neschers",
   title: "L'Histoire de Neschers de l'an 1830 à nos jours.",
   path: "/assets/L-Histoire-de-Neschers.pdf",
@@ -57,7 +56,7 @@ const Presse1992: Presse = {
   ],
 };
 
-const Presse1998: Presse = {
+const Book1998: Book = {
   key: "jean-baptiste-croizet",
   title: "Jean-Baptiste Croizet, curé de Neschers et paléontologue.",
   path: "/assets/Jean-Baptiste-Croizet.pdf",
@@ -85,7 +84,7 @@ const Presse1998: Presse = {
   ],
 };
 
-const Presse2017: Presse = {
+const Book2017: Book = {
   key: "notes-plauzat-villages-voisins",
   title:
     "Quelques notes prises au fil du temps sur Plauzat et ses villages voisins.",
@@ -102,31 +101,13 @@ const Presse2017: Presse = {
   ],
 };
 
-const Page: NextPage = () => {
+const Page: NextPage<{ book: Book }> = ({ book }) => {
   const [numPages, setNumPages] = useState(1);
   const [pageNumber, setPageNumber] = useState(1);
-  const router = useRouter();
-  const [book, setBook] = useState<Presse>(Presse2017);
   const [sliderValue, setSliderValue] = useState<string | number>("1");
   const [selectedItem, setSelectedItem] = useState<number>(0);
   const targetRef = useRef<HTMLDivElement>(null);
   const size = useDimensions(targetRef);
-
-  useEffect(() => {
-    switch (router.query.book) {
-      case Presse1998.key:
-        setBook(Presse1998);
-        break;
-      case Presse1992.key:
-        setBook(Presse1992);
-        break;
-      case Presse2017.key:
-        setBook(Presse2017);
-        break;
-      default:
-        return;
-    }
-  }, [router.query.book]);
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
@@ -335,5 +316,27 @@ const Page: NextPage = () => {
     </Layout>
   );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  let book: Book;
+  switch (context.query.book) {
+    case Book1998.key:
+      book = Book1998;
+      break;
+    case Book1992.key:
+      book = Book1992;
+      break;
+    case Book2017.key:
+      book = Book2017;
+      break;
+    default:
+      return {
+        notFound: true,
+      };
+  }
+  return {
+    props: { book },
+  };
+}
 
 export default Page;
