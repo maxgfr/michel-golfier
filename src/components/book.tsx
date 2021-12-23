@@ -1,4 +1,4 @@
-import { Box, Text, Img, AspectRatio } from "@chakra-ui/react";
+import { Box, Text, Img, AspectRatio, As } from "@chakra-ui/react";
 
 type Props = {
   summary: string;
@@ -6,7 +6,8 @@ type Props = {
   isReverse?: boolean;
   image?: string;
   wrapperProps?: Record<string, any>;
-  href: string;
+  href?: string;
+  titleAs?: As<any> | undefined;
 };
 export function Book({
   summary,
@@ -15,11 +16,11 @@ export function Book({
   wrapperProps,
   isReverse = false,
   href,
+  titleAs,
 }: Props): JSX.Element {
   return (
     <Box
-      as="a"
-      href={href}
+      as={href ? "a" : "div"}
       display="flex"
       flexDirection={{
         base: "column-reverse",
@@ -28,6 +29,7 @@ export function Book({
       backgroundColor="#faf9f9"
       borderRadius={10}
       padding={5}
+      {...(href ? { href } : {})}
       {...wrapperProps}
     >
       {image && (
@@ -42,7 +44,12 @@ export function Book({
         </Box>
       )}
       <Box display="flex" flexDirection="column">
-        <Text fontFamily="Oooh Baby" fontWeight="600" fontSize="4xl">
+        <Text
+          as={titleAs ?? "p"}
+          fontFamily="Oooh Baby"
+          fontWeight="600"
+          fontSize="4xl"
+        >
           {title}
         </Text>
         <Text marginTop={4}>{summary}</Text>

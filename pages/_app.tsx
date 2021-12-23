@@ -6,18 +6,17 @@ import type { AppProps } from "next/app";
 
 import { ChakraProvider } from "@chakra-ui/react";
 import { Header } from "../src/components/header";
+import { Footer } from "../src/components/footer";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
       <Header
-        links={[
-          { href: "/ouvrages", label: "Ouvrages" },
-          { href: "/contact", label: "Contact" },
-        ]}
+        links={[{ href: "/contact", label: "Contact" }]}
         title="Michel Golfier"
       />
       <Component {...pageProps} />
+      <Footer />
     </ChakraProvider>
   );
 }

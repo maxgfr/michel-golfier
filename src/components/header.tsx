@@ -24,6 +24,9 @@ type Props = {
   title: string;
   links: Links[];
 };
+
+export const HeaderHeight = "4rem";
+
 export function Header({ title, links }: Props): JSX.Element {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef<any>();
@@ -56,6 +59,7 @@ export function Header({ title, links }: Props): JSX.Element {
         justifyContent="space-between"
         borderBottomWidth={1}
         paddingY={2}
+        height={HeaderHeight}
       >
         <Box
           display="flex"
@@ -81,9 +85,9 @@ export function Header({ title, links }: Props): JSX.Element {
           top="50%"
         >
           {links.map(({ href, label }) => (
-            <Link key={href} href={href} marginX={5} fontSize="xl">
-              {label}
-            </Link>
+            <NextLink key={href} href={href} passHref>
+              <Link fontSize="xl">{label}</Link>
+            </NextLink>
           ))}
         </Box>
         <Box
