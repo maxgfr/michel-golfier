@@ -14,6 +14,17 @@ const Page: NextPage = () => {
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "http://schema.org",
+              "@type": "WebSite",
+              name: "Michel Golfier",
+              url: BASE_URL,
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "http://schema.org",
               "@type": "Person",
               image: `${BASE_URL}/img/image12.jpg`,
               jobTitle: "Auteur",
