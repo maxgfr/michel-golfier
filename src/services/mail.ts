@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { ContactBody } from "../../pages/api/contact";
 import { generateMailTemplate, removeHtmlTags } from "../utils/mail";
 
 export class MailService {
@@ -26,12 +27,10 @@ export class MailService {
   }
 
   public async sendMail(
-    name: string,
-    email: string,
-    message: string,
+    body: ContactBody,
     subject = "Nouveau message de votre site"
   ): Promise<void> {
-    const html = generateMailTemplate(name, email, message);
+    const html = generateMailTemplate(body.name, body.email, body.message);
     await this.transporter.sendMail({
       from: process.env.FROM_EMAIL,
       to: process.env.TO_EMAIL,

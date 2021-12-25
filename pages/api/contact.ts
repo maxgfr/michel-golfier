@@ -1,9 +1,18 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { MailService } from "../../src/services/mail";
+import { z } from "zod";
 
 type Data = {
   message: string;
 };
+
+const ContactBody = z.object({
+  name: z.string().min(1).max(50),
+  email: z.string().email(),
+  message: z.string().min(10).max(50000),
+});
+
+export type ContactBody = z.infer<typeof ContactBody>;
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,11 +20,8 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     try {
-      await MailService.getInstance().sendMail(
-        req.body.name,
-        req.body.email,
-        req.body.message
-      );
+      ContactBody.parse(req.body);
+      await MailService.getInstance().sendMail(req.body);
       res.status(201).json({ message: `Le message a été envoyé avec succès.` });
     } catch {
       res.status(500).json({

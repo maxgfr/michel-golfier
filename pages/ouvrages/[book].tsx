@@ -231,6 +231,7 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
                 leftIcon={<ArrowLeftIcon />}
                 variant="solid"
                 onClick={onGoBack}
+                name="Page précédente"
               >
                 Page précédente
               </Button>
@@ -238,6 +239,7 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
                 rightIcon={<ArrowRightIcon />}
                 variant="solid"
                 onClick={onGoNext}
+                name="Page suivante"
               >
                 Page suivante
               </Button>
@@ -272,6 +274,7 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
                 leftIcon={<ArrowLeftIcon />}
                 variant="solid"
                 onClick={() => setSelectedItem(selectedItem - 1)}
+                name="Article précédent"
               >
                 Article précédent
               </Button>
@@ -279,6 +282,7 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
                 rightIcon={<ArrowRightIcon />}
                 variant="solid"
                 onClick={() => setSelectedItem(selectedItem + 1)}
+                name="Article suivant"
               >
                 Article suivant
               </Button>

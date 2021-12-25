@@ -139,7 +139,12 @@ const Page: NextPage = () => {
                   </FormControl>
                 )}
               </Field>
-              <Button mt={8} isLoading={props.isSubmitting} type="submit">
+              <Button
+                mt={8}
+                isLoading={props.isSubmitting}
+                type="submit"
+                name="Envoyer un message"
+              >
                 Envoyer mon message
               </Button>
               {status === Status.SUCCESS && (
