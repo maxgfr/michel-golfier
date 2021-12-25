@@ -79,7 +79,11 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
                 datePublished: book.datePublished,
                 image: `${BASE_URL}${book.cover.source}`,
                 inLanguage: "fr-FR",
-                isbn: book.isbn,
+                ...(book.isbn
+                  ? {
+                      isbn: book.isbn,
+                    }
+                  : {}),
                 name: book.title,
                 numberOfPages: book.numberOfPages,
                 ...(book.price

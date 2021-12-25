@@ -48,7 +48,7 @@ const Page: NextPage = () => {
               url: `${BASE_URL}/img/livre1.jpg`,
               width: 600,
               height: 850,
-              alt: "L'Histoire de Neschers de l'an 1830 à nos jours",
+              alt: "L'Histoire d'un village du Puy-de-Dôme de l'an 1830 à nos jours, Neschers",
               type: "image/jpeg",
             },
             {
@@ -93,7 +93,9 @@ const Page: NextPage = () => {
         />
         <Book
           titleAs="h2"
-          title={"L'Histoire de Neschers de l'an 1830 à nos jours."}
+          title={
+            "L'Histoire d'un village du Puy-de-Dôme de l'an 1830 à nos jours, Neschers."
+          }
           summary="Dans mon premier livre, je décris la vie des villageois et du monde rural de mon village sur 150 ans à travers certains événements politiques ou agricoles qui marquèrent la France à différentes époques et qui eurent des répercussions dans les villages de l'hexagone. Neschers a eu un passé préhistorique et historique important, comme dans beaucoup de bourgs de notre région d'ailleurs. Furent trouvées notamment des monnaies celtiques, des poteries, des traces de construction Gallo-Romaine, mais aussi une sculpture en arkose « le cavalier à l'anguipède »."
           image="/img/livre1.jpg"
           wrapperProps={{ marginTop: 10, maxWidth: "80vw" }}

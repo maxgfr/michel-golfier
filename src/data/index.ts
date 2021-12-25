@@ -7,7 +7,7 @@ export type Book = {
   images: Array<BookImage>;
   price?: string;
   numberOfPages: string;
-  isbn: string;
+  isbn?: string;
   cover: BookImage;
   datePublished: string;
   tags: Array<string>;
@@ -17,7 +17,8 @@ export type BookImage = { source: string; alt: string };
 
 export const Book1992: Book = {
   key: "l-histoire-de-neschers",
-  title: "L'Histoire de Neschers de l'an 1830 à nos jours",
+  title:
+    "L'Histoire d'un village du Puy-de-Dôme de l'an 1830 à nos jours, Neschers",
   path: "/assets/L-Histoire-de-Neschers.pdf",
   summary:
     "J'ai essayé dans cette monographie, de faire resurgir les racines d'un passé, images lointaines et fugaces, mais pourtant si proches de nous sur l'humaine condition. De souffrance en joie, de désespoir en espérance, de recul en progrès, l'homme traversa avec courage les épreuves du temps. Cette monographie n'aurait pu voir le jour sans la consultation évidente de plusieurs centaines de pages de délibérations des différents conseils municipaux du village de Neschers qui se sont succédés depuis plus de 150 ans, d'archives privées, ainsi que d'actes notariés.",
@@ -26,25 +27,33 @@ export const Book1992: Book = {
   images: [
     {
       source: `/img/Presse_92_Page_1.jpg`,
-      alt: "Articles de presse publiés en 1998 sur L'Histoire de Neschers de l'an 1830 à nos jours.",
+      alt: "Articles de presse publiés en 1998 sur L'Histoire d'un village du Puy-de-Dôme de l'an 1830 à nos jours, Neschers.",
     },
     {
       source: `/img/Presse_92_Page_2.jpg`,
-      alt: "Articles de presse publiés en 1998 sur L'Histoire de Neschers de l'an 1830 à nos jours.",
+      alt: "Articles de presse publiés en 1998 sur L'Histoire d'un village du Puy-de-Dôme de l'an 1830 à nos jours, Neschers.",
     },
     {
       source: `/img/Presse_92_Page_3.jpg`,
-      alt: "Articles de presse publiés en 1998 sur L'Histoire de Neschers de l'an 1830 à nos jours.",
+      alt: "Articles de presse publiés en 1998 sur L'Histoire d'un village du Puy-de-Dôme de l'an 1830 à nos jours, Neschers.",
     },
   ],
-  numberOfPages: "230",
-  isbn: "12",
+  numberOfPages: "134",
   cover: {
     source: `/img/livre1.jpg`,
-    alt: "L'Histoire de Neschers de l'an 1830 à nos jours",
+    alt: "Histoire d'un village du Puy-de-Dôme de l'an 1830 à nos jours, Neschers",
   },
-  datePublished: "19",
-  tags: ["Histoire", "Neschers", "L'Histoire de Neschers"],
+  datePublished: "1991-12-01",
+  tags: [
+    "Histoire",
+    "Neschers",
+    "L'Histoire de Neschers",
+    "Histoire d'un village du Puy-de-Dôme",
+    "Histoire d'un village du Puy-de-Dôme de l'an 1830 à nos jours, Neschers",
+    "Auvergne",
+    "Puy-de-Dôme",
+    "Michel Golfier",
+  ],
 };
 
 export const Book1998: Book = {
@@ -73,14 +82,21 @@ export const Book1998: Book = {
       alt: "Articles de presse publiés en 1998 sur Jean-Baptiste Croizet, curé de Neschers et paléontologue.",
     },
   ],
-  numberOfPages: "230",
-  isbn: "12",
+  numberOfPages: "311",
   cover: {
     source: `/img/livre2.jpg`,
     alt: "Jean-Baptiste Croizet, curé de Neschers et paléontologue",
   },
-  datePublished: "12-12",
-  tags: ["sciences", "histoire", "paleontologie", "paléontologie"],
+  datePublished: "1998-09-01",
+  tags: [
+    "Sciences",
+    "Histoire",
+    "paléontologie",
+    "Neschers",
+    "Jean-Baptiste Croizet",
+    "Jean-Baptiste Croizet, curé de Neschers et paléontologue",
+    "Michel Golfier",
+  ],
 };
 
 export const Book2017: Book = {
@@ -99,12 +115,19 @@ export const Book2017: Book = {
     },
   ],
   price: "20.00",
-  numberOfPages: "230",
-  isbn: "12",
+  numberOfPages: "246",
+  isbn: "979-10-699-1354-7",
   cover: {
     source: `/img/livre3.jpg`,
     alt: "Quelques notes prises au fil du temps sur Plauzat et ses villages voisins",
   },
-  datePublished: "12-12",
-  tags: ["plauzat"],
+  datePublished: "2017-12-01",
+  tags: [
+    "Quelques notes prises au fil du temps sur Plauzat et ses villages voisins",
+    "Plauzat",
+    "Auvergne",
+    "Villages du Puy-de-Dôme",
+    "Histoire",
+    "Michel Golfier",
+  ],
 };
