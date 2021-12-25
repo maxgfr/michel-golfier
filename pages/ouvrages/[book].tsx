@@ -232,6 +232,7 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
                 variant="solid"
                 onClick={onGoBack}
                 name="Page précédente"
+                aria-label="Page précédente"
               >
                 Page précédente
               </Button>
@@ -240,6 +241,7 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
                 variant="solid"
                 onClick={onGoNext}
                 name="Page suivante"
+                aria-label="Page suivante"
               >
                 Page suivante
               </Button>
@@ -275,6 +277,7 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
                 variant="solid"
                 onClick={() => setSelectedItem(selectedItem - 1)}
                 name="Article précédent"
+                aria-label="Article précédent"
               >
                 Article précédent
               </Button>
@@ -283,6 +286,7 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
                 variant="solid"
                 onClick={() => setSelectedItem(selectedItem + 1)}
                 name="Article suivant"
+                aria-label="Article suivant"
               >
                 Article suivant
               </Button>

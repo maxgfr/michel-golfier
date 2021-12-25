@@ -144,6 +144,7 @@ const Page: NextPage = () => {
                 isLoading={props.isSubmitting}
                 type="submit"
                 name="Envoyer un message"
+                aria-label="Envoyer un message"
               >
                 Envoyer mon message
               </Button>

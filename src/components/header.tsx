@@ -95,7 +95,7 @@ export function Header({ title, links }: Props): JSX.Element {
           justifyContent="center"
           marginRight={4}
         >
-          <Button ref={btnRef} onClick={onOpen} name="Menu">
+          <Button ref={btnRef} onClick={onOpen} name="Menu" aria-label="Menu">
             <HamburgerIcon />
           </Button>
         </Box>
