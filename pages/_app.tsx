@@ -12,7 +12,10 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
       <Header
-        links={[{ href: "/contact", label: "Contact" }]}
+        links={[
+          { href: "/biographie", label: "Biographie" },
+          { href: "/contact", label: "Contact" },
+        ]}
         title="Michel Golfier"
       />
       <Component {...pageProps} />

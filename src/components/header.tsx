@@ -46,7 +46,9 @@ export function Header({ title, links }: Props): JSX.Element {
           <DrawerBody display="flex" flexDirection="column">
             {links.map(({ href, label }) => (
               <NextLink key={href} href={href} passHref>
-                <Link fontSize="xl">{label}</Link>
+                <Link fontSize="xl" marginY={2}>
+                  {label}
+                </Link>
               </NextLink>
             ))}
           </DrawerBody>
@@ -85,7 +87,9 @@ export function Header({ title, links }: Props): JSX.Element {
         >
           {links.map(({ href, label }) => (
             <NextLink key={href} href={href} passHref>
-              <Link fontSize="xl">{label}</Link>
+              <Link fontSize="xl" marginX={2}>
+                {label}
+              </Link>
             </NextLink>
           ))}
         </Box>

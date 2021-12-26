@@ -1,7 +1,7 @@
 import { Box, Text, Img, AspectRatio, As } from "@chakra-ui/react";
 
 type Props = {
-  summary: string;
+  summary: Array<string>;
   title: string;
   isReverse?: boolean;
   image?: string;
@@ -52,7 +52,11 @@ export function Book({
         >
           {title}
         </Text>
-        <Text marginTop={4}>{summary}</Text>
+        {summary.map((line, i) => (
+          <Text key={i} marginTop={4}>
+            {line}
+          </Text>
+        ))}
       </Box>
     </Box>
   );
