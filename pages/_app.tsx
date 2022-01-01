@@ -15,6 +15,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         links={[
           { href: "/biographie", label: "Biographie" },
           { href: "/contact", label: "Contact" },
+          {
+            href: "https://michelgolfier.wordpress.com/",
+            label: "Blog",
+            isExternal: true,
+          },
         ]}
         title="Michel Golfier"
       />

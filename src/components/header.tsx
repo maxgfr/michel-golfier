@@ -1,4 +1,4 @@
-import { HamburgerIcon } from "@chakra-ui/icons";
+import { HamburgerIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import {
   Box,
   Text,
@@ -18,6 +18,7 @@ import NextLink from "next/link";
 type Links = {
   href: string;
   label: string;
+  isExternal?: boolean;
 };
 
 type Props = {
@@ -85,10 +86,11 @@ export function Header({ title, links }: Props): JSX.Element {
           left="50%"
           top="50%"
         >
-          {links.map(({ href, label }) => (
+          {links.map(({ href, label, isExternal }) => (
             <NextLink key={href} href={href} passHref>
-              <Link fontSize="xl" marginX={2}>
+              <Link fontSize="xl" marginX={2} isExternal={isExternal}>
                 {label}
+                {isExternal && <ExternalLinkIcon marginLeft="8px" />}
               </Link>
             </NextLink>
           ))}
