@@ -8,8 +8,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@chakra-ui/icons": "^1.1.1",
-    "@chakra-ui/react": "^1.7.2",
+    "@chakra-ui/icons": "1.1.7",
+    "@chakra-ui/react": "1.8.9",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@fontsource/baloo-bhaijaan-2": "^4.5.2",
