@@ -1,1 +1,1 @@
-export const BASE_URL = "https://wwww.michel-golfier.fr";
+export const BASE_URL = "https://wwww.michelgolfier.fr";
