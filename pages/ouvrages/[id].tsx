@@ -11,7 +11,7 @@ import {
 import Image from "next/image";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
-import type { GetServerSidePropsContext, NextPage } from "next";
+import type { GetStaticPropsContext, NextPage } from "next";
 import { Document, Page as Pdf, pdfjs } from "react-pdf";
 import {
   NumberInput,
@@ -303,6 +303,7 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
               autoPlay={false}
               onChange={v => setSelectedItem(v)}
               selectedItem={selectedItem}
+              showThumbs={false}
             >
               {book.images.map((img, index) => (
                 <Image
@@ -322,9 +323,20 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
   );
 };
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
+export async function getStaticPaths() {
+  return {
+    paths: [
+      { params: { id: Book1998.key } },
+      { params: { id: Book1992.key } },
+      { params: { id: Book2017.key } },
+    ],
+    fallback: false,
+  };
+}
+
+export async function getStaticProps(context: GetStaticPropsContext) {
   let book: Book;
-  switch (context.query.book) {
+  switch (context.params?.id) {
     case Book1998.key:
       book = Book1998;
       break;
