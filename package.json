@@ -30,7 +30,7 @@
   "devDependencies": {
     "@types/node": "16.11.17",
     "@types/nodemailer": "^6.4.4",
-    "@types/react": "17.0.37",
+    "@types/react": "17.0.53",
     "@types/react-pdf": "^5.0.9",
     "eslint": "7.32.0",
     "eslint-config-next": "12.0.4",
