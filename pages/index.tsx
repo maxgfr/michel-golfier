@@ -24,7 +24,6 @@ const Page: NextPage = () => {
       <NextSeo
         title="Michel Golfier, auteur auvergnat"
         description="Attaché à mes racines Auvergnates, je suis l'auteur de trois livres ayant tous le même dénominateur commun à savoir la vie locale d'autrefois, remontant parfois le temps sur plusieurs siècles. Faisant mienne la citation d'un écrivain Africain Amadou Hampaté Bâ « quand un vieillard meurt, c'est toute une bibliothéque qui brûle » cela est vrai quelque soit le pays ou le peuple. Faute de n'avoir pas su ou pu interroger nos anciens, nous n'avons pas été capable, ou tellement peu d'accueillir la mémoire."
-        canonical={BASE_URL}
         openGraph={{
           url: BASE_URL,
           title: "Michel Golfier, auteur auvergnat",

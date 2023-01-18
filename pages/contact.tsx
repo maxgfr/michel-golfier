@@ -78,7 +78,6 @@ const Page: NextPage = () => {
       <NextSeo
         title="Michel Golfier | Contact"
         description="Contactez-moi sur cette page pour plus d'informations."
-        canonical={`${BASE_URL}/contact`}
         openGraph={{
           url: `${BASE_URL}/contact`,
           title: "Michel Golfier | Contact",

@@ -105,7 +105,6 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
       <NextSeo
         title={`Michel Golfier | ${book.title}`}
         description={book.summary}
-        canonical={`${BASE_URL}/${book.key}`}
         openGraph={{
           url: `${BASE_URL}/${book.key}`,
           title: `Michel Golfier | ${book.title}`,

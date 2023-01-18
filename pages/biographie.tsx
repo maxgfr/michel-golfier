@@ -26,7 +26,6 @@ const Page: NextPage = () => {
       <NextSeo
         title="Michel Golfier | Biographie"
         description="Biographie de l'écrivain auvergnat, Michel Golfier."
-        canonical={`${BASE_URL}/biographie`}
         openGraph={{
           url: `${BASE_URL}/biographie`,
           title: "Michel Golfier | Biographie",
