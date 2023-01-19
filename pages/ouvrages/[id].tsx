@@ -24,11 +24,7 @@ import { useDimensions } from "../../src/hooks/useDimensions";
 import { NextSeo } from "next-seo";
 import { BASE_URL } from "../../src/config";
 import { Book, Book1992, Book1998, Book2017 } from "../../src/data";
-import dynamic from "next/dynamic";
-
-const PDFViewer = dynamic(() => import("../../src/components/pdf"), {
-  ssr: false,
-});
+import PDFViewer from "../../src/components/pdf";
 
 const Page: NextPage<{ book: Book }> = ({ book }) => {
   const [numPages, setNumPages] = useState(1);

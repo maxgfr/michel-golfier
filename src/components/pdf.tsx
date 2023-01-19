@@ -1,6 +1,6 @@
 import { Document, Page as Pdf, pdfjs } from "react-pdf";
 
-pdfjs.GlobalWorkerOptions.workerSrc = "/scripts/pdf.worker.min.js";
+pdfjs.GlobalWorkerOptions.workerSrc = "/static/scripts/pdf.worker.min.js";
 
 type Props = {
   path: string;
