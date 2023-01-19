@@ -12,7 +12,6 @@ import Image from "next/image";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
 import type { GetStaticPropsContext, NextPage } from "next";
-import { Document, Page as Pdf, pdfjs } from "react-pdf";
 import {
   NumberInput,
   NumberInputField,
@@ -25,7 +24,11 @@ import { useDimensions } from "../../src/hooks/useDimensions";
 import { NextSeo } from "next-seo";
 import { BASE_URL } from "../../src/config";
 import { Book, Book1992, Book1998, Book2017 } from "../../src/data";
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+import dynamic from "next/dynamic";
+
+const PDFViewer = dynamic(() => import("../../src/components/pdf"), {
+  ssr: false,
+});
 
 const Page: NextPage<{ book: Book }> = ({ book }) => {
   const [numPages, setNumPages] = useState(1);
@@ -134,13 +137,13 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
             maxWidth={{ base: "90vw", lg: "45vw" }}
             marginRight="2rem"
           >
-            <Document file={book.path} onLoadSuccess={onDocumentLoadSuccess}>
-              <Pdf
-                pageNumber={pageNumber}
-                width={size.width}
-                height={size.height}
-              />
-            </Document>
+            <PDFViewer
+              height={size.height}
+              width={size.width}
+              path={book.path}
+              pageNumber={pageNumber}
+              onLoadSuccess={onDocumentLoadSuccess}
+            />
           </Box>
           <Box
             display="flex"

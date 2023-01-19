@@ -1,10 +1,9 @@
 const ContentSecurityPolicy = `
   default-src 'self';
   img-src 'self' data:;
-  script-src 'self' cdnjs.cloudflare.com;
+  script-src 'self' ${process.env.NODE_ENV !== "production" && "'unsafe-eval'"};
   style-src 'self' 'unsafe-inline';
   font-src 'self' data:;
-  worker-src 'self' blob: cdnjs.cloudflare.com;
   connect-src 'self' vitals.vercel-insights.com;
 `;
 
