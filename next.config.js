@@ -1,7 +1,7 @@
 const ContentSecurityPolicy = `
   default-src 'self';
   img-src 'self' data:;
-  script-src 'self' cdnjs.cloudflare.com
+  script-src 'self' cdnjs.cloudflare.com;
   style-src 'self' 'unsafe-inline';
   font-src 'self' data:;
   worker-src 'self' blob: cdnjs.cloudflare.com;
