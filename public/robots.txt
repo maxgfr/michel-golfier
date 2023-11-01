@@ -2,8 +2,5 @@
 User-agent: *
 Allow: /
 
-# Host
-Host: https://www.michelgolfier.fr
-
 # Sitemaps
 Sitemap: https://www.michelgolfier.fr/sitemap.xml
