@@ -7,7 +7,7 @@ import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
 import { Header } from "../src/components/header";
 import { Footer } from "../src/components/footer";
-import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -20,7 +20,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         title="Michel Golfier"
       />
       <Component {...pageProps} />
-      <Analytics />
+      <SpeedInsights />
       <Footer />
     </ChakraProvider>
   );

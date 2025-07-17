@@ -1053,10 +1053,10 @@
     "@typescript-eslint/types" "4.33.0"
     eslint-visitor-keys "^2.0.0"
 
-"@vercel/analytics@^0.1.8":
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/@vercel/analytics/-/analytics-0.1.8.tgz#71f1f8c7bb98ac0c5c47eb3fb8ccbe8141b9fe47"
-  integrity sha512-PQrOI8BJ9qUiVJuQfnKiJd15eDjDJH9TBKsNeMrtelT4NAk7d9mBVz1CoZkvoFnHQ0OW7Xnqmr1F2nScfAnznQ==
+"@vercel/speed-insights@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@vercel/speed-insights/-/speed-insights-1.2.0.tgz#1656c3596d4ec02d93d301ca45944c1b9b245186"
+  integrity sha512-y9GVzrUJ2xmgtQlzFP2KhVRoCglwfRQgjyfY607aU0hh0Un6d0OUyrJkjuAlsV18qR4zfoFPs/BiIj9YDS6Wzw==
 
 acorn-jsx@^5.3.1:
   version "5.3.2"
