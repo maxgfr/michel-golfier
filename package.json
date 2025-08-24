@@ -22,7 +22,7 @@
     "nodemailer": "^6.7.2",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-pdf": "^5.5.0",
+    "react-pdf": "^7.0.0",
     "react-responsive-carousel": "^3.2.22",
     "xss": "^1.0.10",
     "yup": "^0.32.11",
