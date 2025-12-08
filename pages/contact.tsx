@@ -34,6 +34,7 @@ type FormValues = {
   name: string;
   email: string;
   message: string;
+  website: string; // Honeypot anti-bot
 };
 
 enum Status {
@@ -43,7 +44,7 @@ enum Status {
 }
 
 const Page: NextPage = () => {
-  const initialValues: FormValues = { name: "", email: "", message: "" };
+  const initialValues: FormValues = { name: "", email: "", message: "", website: "" };
   const [status, setStatus] = useState<Status>(Status.IDLE);
 
   const onSubmit = async (values: FormValues, actions: any): Promise<void> => {
@@ -136,6 +137,26 @@ const Page: NextPage = () => {
                     />
                     <FormErrorMessage>{form.errors.message}</FormErrorMessage>
                   </FormControl>
+                )}
+              </Field>
+              {/* Honeypot anti-bot : champ caché que seuls les bots remplissent */}
+              <Field name="website">
+                {({ field }: any) => (
+                  <Box
+                    position="absolute"
+                    left="-9999px"
+                    aria-hidden="true"
+                    tabIndex={-1}
+                  >
+                    <Input
+                      {...field}
+                      type="text"
+                      id="website"
+                      name="website"
+                      autoComplete="off"
+                      tabIndex={-1}
+                    />
+                  </Box>
                 )}
               </Field>
               <Button
