@@ -117,6 +117,7 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
                     availability: "https://schema.org/InStock",
                     price: book.price,
                     priceCurrency: "EUR",
+                    valueAddedTaxIncluded: true,
                     seller: { "@id": PERSON_ID },
                     ...(book.offerUrl ? { url: book.offerUrl } : {}),
                   },

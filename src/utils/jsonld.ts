@@ -21,7 +21,7 @@ export const personSchema = {
     "@type": "Country",
     name: "France",
   },
-  gender: "male",
+  sex: "Male",
   description:
     "Auteur auvergnat spécialisé dans l'histoire locale et le patrimoine de la région Auvergne.",
   knowsAbout: [
