@@ -28,6 +28,9 @@ pnpm-debug.log*
 # pnpm
 .pnpm-store/
 
+# image backups
+public/img.backup/
+
 # local env files
 .env.local
 .env.development.local
