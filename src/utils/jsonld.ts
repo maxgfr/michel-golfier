@@ -15,13 +15,16 @@ export const personSchema = {
   birthPlace: {
     "@type": "Place",
     name: "Clermont-Ferrand",
-    addressCountry: "FR",
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "FR",
+    },
   },
   nationality: {
     "@type": "Country",
     name: "France",
   },
-  sex: "Male",
+  gender: "Male",
   description:
     "Auteur auvergnat spécialisé dans l'histoire locale et le patrimoine de la région Auvergne.",
   knowsAbout: [
@@ -46,8 +49,11 @@ export function entityToSchema(entity: SchemaEntity): Record<string, unknown> {
       return {
         "@type": "Place",
         name: entity.name,
-        addressCountry: "FR",
-        ...(entity.addressRegion && { addressRegion: entity.addressRegion }),
+        address: {
+          "@type": "PostalAddress",
+          addressCountry: "FR",
+          ...(entity.addressRegion && { addressRegion: entity.addressRegion }),
+        },
         ...(entity.latitude !== undefined &&
           entity.longitude !== undefined && {
             geo: {
