@@ -46,7 +46,7 @@ export function Header({ title, links }: Props): JSX.Element {
           <DrawerHeader fontSize="2xl">Menu</DrawerHeader>
           <DrawerBody display="flex" flexDirection="column">
             {links.map(({ href, label }) => (
-              <NextLink key={href} href={href} passHref>
+              <NextLink key={href} href={href}>
                 <Link fontSize="xl" marginY={2}>
                   {label}
                 </Link>
@@ -69,15 +69,17 @@ export function Header({ title, links }: Props): JSX.Element {
           justifyContent="center"
           marginLeft={4}
         >
-          <Text
-            as="a"
-            href="/"
-            fontFamily="Oooh Baby"
-            fontWeight="600"
-            fontSize="4xl"
-          >
-            {title}
-          </Text>
+          <NextLink href="/">
+            <Text
+              as="span"
+              fontFamily="Oooh Baby"
+              fontWeight="600"
+              fontSize="4xl"
+              _hover={{ cursor: "pointer" }}
+            >
+              {title}
+            </Text>
+          </NextLink>
         </Box>
         <Box
           display={{ base: "none", lg: "initial" }}
@@ -87,7 +89,7 @@ export function Header({ title, links }: Props): JSX.Element {
           top="50%"
         >
           {links.map(({ href, label, isExternal }) => (
-            <NextLink key={href} href={href} passHref>
+            <NextLink key={href} href={href}>
               <Link fontSize="xl" marginX={2} isExternal={isExternal}>
                 {label}
                 {isExternal && <ExternalLinkIcon marginLeft="8px" />}

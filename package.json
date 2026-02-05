@@ -5,35 +5,36 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "analyze": "ANALYZE=true pnpm build"
   },
   "dependencies": {
-    "@chakra-ui/icons": "^1.1.1",
-    "@chakra-ui/react": "^1.7.2",
-    "@emotion/react": "^11",
-    "@emotion/styled": "^11",
-    "@fontsource/baloo-bhaijaan-2": "^4.5.2",
-    "@fontsource/oooh-baby": "^4.5.0",
-    "@vercel/speed-insights": "^1.2.0",
-    "formik": "^2.2.9",
-    "framer-motion": "^4",
-    "next": "^12.3.4",
-    "nodemailer": "^6.7.2",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "react-pdf": "^5.5.0",
-    "react-responsive-carousel": "^3.2.22",
+    "@chakra-ui/icons": "^2.1.1",
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@vercel/speed-insights": "^1.1.0",
+    "formik": "^2.4.6",
+    "framer-motion": "^11.5.4",
+    "next": "^14.2.21",
+    "nodemailer": "^6.9.15",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-pdf": "^7.7.1",
+    "react-responsive-carousel": "^3.2.23",
     "xss": "^1.0.15",
-    "yup": "^0.32.11",
-    "zod": "^3.11.6"
+    "yup": "^1.4.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/node": "16.11.17",
-    "@types/nodemailer": "^6.4.4",
-    "@types/react": "17.0.37",
-    "@types/react-pdf": "^5.0.9",
-    "eslint": "7.32.0",
-    "eslint-config-next": "12.0.4",
-    "typescript": "4.5.2"
-  }
+    "@next/bundle-analyzer": "^14.2.21",
+    "@types/node": "^20.17.6",
+    "@types/nodemailer": "^6.4.17",
+    "@types/react": "^18.3.12",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.21",
+    "sharp": "^0.33.5",
+    "typescript": "^5.6.3"
+  },
+  "packageManager": "pnpm@9.15.0"
 }

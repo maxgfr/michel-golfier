@@ -1,23 +1,26 @@
 import { useRef, useState } from "react";
-import { Button } from "@chakra-ui/button";
-import { Box, Stack, Link, Text } from "@chakra-ui/layout";
+import {
+  Button,
+  Box,
+  Stack,
+  Link,
+  Text,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+} from "@chakra-ui/react";
+import Image from "next/image";
 import xss from "xss";
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
   ExternalLinkIcon,
 } from "@chakra-ui/icons";
-import Image from "next/image";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
 import type { GetStaticPropsContext, NextPage } from "next";
-import {
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-} from "@chakra-ui/number-input";
 import { Layout } from "../../src/components/layout";
 import { useDimensions } from "../../src/hooks/useDimensions";
 import { SEO } from "../../src/components/seo";
@@ -311,14 +314,15 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
               showThumbs={false}
             >
               {book.images.map((img, index) => (
-                <Image
-                  key={index}
-                  src={img.source}
-                  alt={img.alt}
-                  layout="responsive"
-                  width="100%"
-                  height="100%"
-                />
+                <div key={index} style={{ position: "relative", width: "100%", aspectRatio: "210/297" }}>
+                  <Image
+                    src={img.source}
+                    alt={img.alt}
+                    fill
+                    style={{ objectFit: "contain" }}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 60vw"
+                  />
+                </div>
               ))}
             </Carousel>
           </Box>

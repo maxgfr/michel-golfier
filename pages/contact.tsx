@@ -78,8 +78,8 @@ const Page: NextPage = () => {
   return (
     <>
       <SEO
-        title="Michel Golfier | Contact"
-        description="Contactez-moi sur cette page pour plus d'informations."
+        title="Contact - Michel Golfier, auteur auvergnat"
+        description="Contactez Michel Golfier pour obtenir ses ouvrages sur l'histoire de l'Auvergne, organiser une signature ou poser vos questions."
         url={`${BASE_URL}/contact`}
         jsonLd={[
           {

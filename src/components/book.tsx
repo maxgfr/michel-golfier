@@ -1,4 +1,6 @@
-import { Box, Text, Img, AspectRatio, As } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
+import Image from "next/image";
+import type { ElementType } from "react";
 
 type Props = {
   summary: Array<string>;
@@ -7,7 +9,7 @@ type Props = {
   image?: string;
   wrapperProps?: Record<string, any>;
   href?: string;
-  titleAs?: As<any> | undefined;
+  titleAs?: ElementType | undefined;
 };
 export function Book({
   summary,
@@ -33,14 +35,20 @@ export function Book({
       {...wrapperProps}
     >
       {image && (
-        <Box marginTop={{ base: 4, md: 0 }}>
-          <AspectRatio
-            minWidth={{ base: "100px", sm: "200px", md: "300px" }}
-            marginRight={4}
-            ratio={210 / 297}
-          >
-            <Img src={image} alt={title} objectFit="cover" />
-          </AspectRatio>
+        <Box
+          marginTop={{ base: 4, md: 0 }}
+          marginRight={{ md: 4 }}
+          position="relative"
+          minWidth={{ base: "100px", sm: "200px", md: "300px" }}
+          aspectRatio={210 / 297}
+        >
+          <Image
+            src={image}
+            alt={title}
+            fill
+            style={{ objectFit: "cover" }}
+            sizes="(max-width: 768px) 200px, 300px"
+          />
         </Box>
       )}
       <Box display="flex" flexDirection="column">
