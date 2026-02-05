@@ -1,61 +1,39 @@
 import type { NextPage } from "next";
-import { NextSeo } from "next-seo";
 import { Book } from "../src/components/book";
 import { Layout } from "../src/components/layout";
 import { BASE_URL } from "../src/config";
-import Head from "next/head";
+import { SEO } from "../src/components/seo";
+import { personSchema, websiteSchema } from "../src/utils/jsonld";
+import { Book1992, Book1998, Book2017 } from "../src/data";
+
+const books = [Book1992, Book1998, Book2017];
 
 const Page: NextPage = () => {
   return (
     <>
-      <Head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "http://schema.org",
-              "@type": "WebSite",
-              name: "Michel Golfier",
-              url: BASE_URL,
-            }),
-          }}
-        />
-      </Head>
-      <NextSeo
+      <SEO
         title="Michel Golfier, auteur auvergnat"
         description="Attaché à mes racines Auvergnates, je suis l'auteur de trois livres ayant tous le même dénominateur commun à savoir la vie locale d'autrefois, remontant parfois le temps sur plusieurs siècles. Faisant mienne la citation d'un écrivain Africain Amadou Hampaté Bâ « quand un vieillard meurt, c'est toute une bibliothéque qui brûle » cela est vrai quelque soit le pays ou le peuple. Faute de n'avoir pas su ou pu interroger nos anciens, nous n'avons pas été capable, ou tellement peu d'accueillir la mémoire."
-        openGraph={{
-          url: BASE_URL,
-          title: "Michel Golfier, auteur auvergnat",
-          description:
-            "Attaché à mes racines Auvergnates, je suis l'auteur de trois livres ayant tous le même dénominateur commun à savoir la vie locale d'autrefois, remontant parfois le temps sur plusieurs siècles. Faisant mienne la citation d'un écrivain Africain Amadou Hampaté Bâ « quand un vieillard meurt, c'est toute une bibliothéque qui brûle » cela est vrai quelque soit le pays ou le peuple. Faute de n'avoir pas su ou pu interroger nos anciens, nous n'avons pas été capable, ou tellement peu d'accueillir la mémoire.",
-          images: [
-            {
-              url: `${BASE_URL}/img/livre1.jpg`,
-              width: 600,
-              height: 850,
-              alt: "L'Histoire d'un village du Puy-de-Dôme de l'an 1830 à nos jours, Neschers",
-              type: "image/jpeg",
-            },
-            {
-              url: `${BASE_URL}/img/livre2.jpg`,
-              width: 600,
-              height: 850,
-              alt: "Jean-Baptiste Croizet, curé de Neschers et paléontologue",
-              type: "image/jpeg",
-            },
-            {
-              url: `${BASE_URL}/img/livre3.jpg`,
-              width: 600,
-              height: 850,
-              alt: "Quelques notes prises au fil du temps sur Plauzat et ses villages voisins",
-              type: "image/jpeg",
-            },
-          ],
-          site_name: "Michel Golfier",
-          locale: "fr_FR",
-          type: "website",
-        }}
+        images={[
+          { url: `${BASE_URL}/img/livre1.jpg`, width: 600, height: 850, alt: "L'Histoire d'un village du Puy-de-Dôme de l'an 1830 à nos jours, Neschers" },
+          { url: `${BASE_URL}/img/livre2.jpg`, width: 600, height: 850, alt: "Jean-Baptiste Croizet, curé de Neschers et paléontologue" },
+          { url: `${BASE_URL}/img/livre3.jpg`, width: 600, height: 850, alt: "Quelques notes prises au fil du temps sur Plauzat et ses villages voisins" },
+        ]}
+        jsonLd={[
+          websiteSchema,
+          personSchema,
+          {
+            "@type": "ItemList",
+            name: "Ouvrages de Michel Golfier",
+            numberOfItems: books.length,
+            itemListElement: books.map((book, index) => ({
+              "@type": "ListItem",
+              position: index + 1,
+              url: `${BASE_URL}/ouvrages/${book.key}`,
+              name: book.title,
+            })),
+          },
+        ]}
       />
       <Layout
         wrapperProps={{

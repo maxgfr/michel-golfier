@@ -14,8 +14,9 @@ import { Formik, Form, Field } from "formik";
 
 import * as Yup from "yup";
 import { useState } from "react";
-import { NextSeo } from "next-seo";
 import { BASE_URL } from "../src/config";
+import { SEO } from "../src/components/seo";
+import { WEBSITE_ID, breadcrumbSchema } from "../src/utils/jsonld";
 
 const FormSchema = Yup.object().shape({
   name: Yup.string()
@@ -76,17 +77,25 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <NextSeo
+      <SEO
         title="Michel Golfier | Contact"
         description="Contactez-moi sur cette page pour plus d'informations."
-        openGraph={{
-          url: `${BASE_URL}/contact`,
-          title: "Michel Golfier | Contact",
-          description: "Contactez-moi sur cette page pour plus d'informations.",
-          site_name: "Michel Golfier",
-          type: "website",
-          locale: "fr_FR",
-        }}
+        url={`${BASE_URL}/contact`}
+        jsonLd={[
+          {
+            "@type": "ContactPage",
+            "@id": `${BASE_URL}/contact#webpage`,
+            url: `${BASE_URL}/contact`,
+            name: "Michel Golfier | Contact",
+            isPartOf: { "@id": WEBSITE_ID },
+            description:
+              "Contactez Michel Golfier, auteur auvergnat, pour plus d'informations sur ses ouvrages.",
+          },
+          breadcrumbSchema([
+            { name: "Accueil", item: BASE_URL },
+            { name: "Contact" },
+          ]),
+        ]}
       />
       <Layout>
         <Text as="h1" fontFamily="Oooh Baby" fontWeight="600" fontSize="4xl">

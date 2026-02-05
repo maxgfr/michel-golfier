@@ -1,5 +1,4 @@
-import React, { useRef, useState } from "react";
-import Head from "next/head";
+import { useRef, useState } from "react";
 import { Button } from "@chakra-ui/button";
 import { Box, Stack, Link, Text } from "@chakra-ui/layout";
 import xss from "xss";
@@ -21,9 +20,10 @@ import {
 } from "@chakra-ui/number-input";
 import { Layout } from "../../src/components/layout";
 import { useDimensions } from "../../src/hooks/useDimensions";
-import { NextSeo } from "next-seo";
+import { SEO } from "../../src/components/seo";
 import { BASE_URL } from "../../src/config";
 import { Book, Book1992, Book1998, Book2017 } from "../../src/data";
+import { PERSON_ID, WEBSITE_ID, breadcrumbSchema, entityToSchema } from "../../src/utils/jsonld";
 import PDFViewer from "../../src/components/pdf";
 
 const Page: NextPage<{ book: Book }> = ({ book }) => {
@@ -33,6 +33,10 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
   const [selectedItem, setSelectedItem] = useState<number>(0);
   const targetRef = useRef<HTMLDivElement>(null);
   const size = useDimensions(targetRef);
+  const plainDescription = book.summary
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
@@ -64,64 +68,66 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
 
   return (
     <>
-      <Head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "http://schema.org",
-              "@type": "WebPage",
-              mainEntity: {
-                "@type": "Book",
-                author: "http://www.example.com/author.html",
-                bookFormat: "http://schema.org/EBook",
-                datePublished: book.datePublished,
-                image: `${BASE_URL}${book.cover.source}`,
-                inLanguage: "fr-FR",
-                ...(book.isbn
-                  ? {
-                      isbn: book.isbn,
-                    }
-                  : {}),
-                name: book.title,
-                numberOfPages: book.numberOfPages,
-                ...(book.price
-                  ? {
-                      offers: {
-                        "@type": "Offer",
-                        availability: "http://schema.org/InStock",
-                        price: book.price,
-                        priceCurrency: "EUR",
-                      },
-                    }
-                  : {}),
-                publisher: "Michel Golfier",
-              },
-            }),
-          }}
-        />
-      </Head>
-      <NextSeo
+      <SEO
         title={`Michel Golfier | ${book.title}`}
-        description={book.summary}
-        openGraph={{
-          url: `${BASE_URL}/${book.key}`,
-          title: `Michel Golfier | ${book.title}`,
-          description: book.summary,
-          images: [...book.images, book.cover].map(img => ({
-            alt: img.alt,
-            url: `${BASE_URL}${img.source}`,
-            type: "image/jpeg",
-          })),
-          type: "book",
-          book: {
-            releaseDate: book.datePublished,
-            isbn: book.isbn,
-            tags: book.tags,
-          },
-          site_name: "Michel Golfier",
-          locale: "fr_FR",
+        description={plainDescription}
+        url={`${BASE_URL}/ouvrages/${book.key}`}
+        ogType="book"
+        images={[book.cover, ...book.images].map(img => ({
+          url: `${BASE_URL}${img.source}`,
+          alt: img.alt,
+        }))}
+        book={{
+          releaseDate: book.datePublished,
+          isbn: book.isbn,
+          tags: book.tags,
         }}
+        jsonLd={[
+          {
+            "@type": "WebPage",
+            "@id": `${BASE_URL}/ouvrages/${book.key}#webpage`,
+            url: `${BASE_URL}/ouvrages/${book.key}`,
+            name: `Michel Golfier | ${book.title}`,
+            isPartOf: { "@id": WEBSITE_ID },
+            mainEntity: {
+              "@id": `${BASE_URL}/ouvrages/${book.key}#book`,
+            },
+          },
+          {
+            "@type": "Book",
+            "@id": `${BASE_URL}/ouvrages/${book.key}#book`,
+            name: book.title,
+            url: `${BASE_URL}/ouvrages/${book.key}`,
+            author: { "@id": PERSON_ID },
+            publisher: { "@id": PERSON_ID },
+            bookFormat: "EBook",
+            datePublished: book.datePublished,
+            description: plainDescription,
+            image: `${BASE_URL}${book.cover.source}`,
+            inLanguage: "fr",
+            numberOfPages: book.numberOfPages,
+            genre: book.genre,
+            keywords: book.tags,
+            about: book.entities.map(entityToSchema),
+            ...(book.isbn ? { isbn: book.isbn } : {}),
+            ...(book.price
+              ? {
+                  offers: {
+                    "@type": "Offer",
+                    availability: "https://schema.org/InStock",
+                    price: book.price,
+                    priceCurrency: "EUR",
+                    seller: { "@id": PERSON_ID },
+                    ...(book.offerUrl ? { url: book.offerUrl } : {}),
+                  },
+                }
+              : {}),
+          },
+          breadcrumbSchema([
+            { name: "Accueil", item: BASE_URL },
+            { name: book.title },
+          ]),
+        ]}
       />
       <Layout>
         <Box display="flex" flexDirection={{ base: "column", lg: "row" }}>

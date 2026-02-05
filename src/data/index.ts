@@ -11,9 +11,17 @@ export type Book = {
   cover: BookImage;
   datePublished: string;
   tags: Array<string>;
+  entities: SchemaEntity[];
+  genre: string[];
+  offerUrl?: string;
 };
 
 export type BookImage = { source: string; alt: string };
+
+export type SchemaEntity =
+  | { type: "Place"; name: string; addressRegion?: string; latitude?: number; longitude?: number }
+  | { type: "Person"; name: string; description?: string }
+  | { type: "Thing"; name: string };
 
 export const Book1992: Book = {
   key: "l-histoire-de-neschers",
@@ -54,6 +62,13 @@ export const Book1992: Book = {
     "Puy-de-Dôme",
     "Michel Golfier",
   ],
+  entities: [
+    { type: "Place", name: "Neschers", addressRegion: "Puy-de-Dôme", latitude: 45.5903, longitude: 3.1633 },
+    { type: "Place", name: "Puy-de-Dôme", addressRegion: "Auvergne-Rhône-Alpes" },
+    { type: "Thing", name: "Histoire locale" },
+    { type: "Thing", name: "Histoire de France" },
+  ],
+  genre: ["Histoire"],
 };
 
 export const Book1998: Book = {
@@ -97,6 +112,13 @@ export const Book1998: Book = {
     "Jean-Baptiste Croizet, curé de Neschers et paléontologue",
     "Michel Golfier",
   ],
+  entities: [
+    { type: "Person", name: "Jean-Baptiste Croizet", description: "Curé de Neschers et paléontologue du XIXème siècle" },
+    { type: "Place", name: "Neschers", addressRegion: "Puy-de-Dôme", latitude: 45.5903, longitude: 3.1633 },
+    { type: "Thing", name: "Paléontologie" },
+    { type: "Thing", name: "Histoire des sciences" },
+  ],
+  genre: ["Biographie", "Histoire des sciences"],
 };
 
 export const Book2017: Book = {
@@ -130,4 +152,12 @@ export const Book2017: Book = {
     "Histoire",
     "Michel Golfier",
   ],
+  entities: [
+    { type: "Place", name: "Plauzat", addressRegion: "Puy-de-Dôme", latitude: 45.6208, longitude: 3.1481 },
+    { type: "Place", name: "Puy-de-Dôme", addressRegion: "Auvergne-Rhône-Alpes" },
+    { type: "Thing", name: "Histoire locale" },
+    { type: "Thing", name: "Histoire de France" },
+  ],
+  genre: ["Histoire"],
+  offerUrl: "https://www.amazon.fr/dp/B07B8KLS8M",
 };

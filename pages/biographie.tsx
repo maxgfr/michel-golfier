@@ -1,45 +1,39 @@
 import type { NextPage } from "next";
-import { NextSeo } from "next-seo";
 import { Book } from "../src/components/book";
 import { Layout } from "../src/components/layout";
 import { BASE_URL } from "../src/config";
-import Head from "next/head";
+import { SEO } from "../src/components/seo";
+import {
+  personSchema,
+  breadcrumbSchema,
+  WEBSITE_ID,
+  PERSON_ID,
+} from "../src/utils/jsonld";
 
 const Page: NextPage = () => {
   return (
     <>
-      <Head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "http://schema.org",
-              "@type": "Person",
-              image: `${BASE_URL}/img/image12.jpg`,
-              jobTitle: "Auteur",
-              name: "Michel Golfier",
-              url: `${BASE_URL}/biographie`,
-            }),
-          }}
-        />
-      </Head>
-      <NextSeo
+      <SEO
         title="Michel Golfier | Biographie"
         description="Biographie de l'écrivain auvergnat, Michel Golfier."
-        openGraph={{
-          url: `${BASE_URL}/biographie`,
-          title: "Michel Golfier | Biographie",
-          description: "Biographie de l'écrivain auvergnat, Michel Golfier.",
-          site_name: "Michel Golfier",
-          locale: "fr_FR",
-          type: "profile",
-          profile: {
-            firstName: "Michel",
-            lastName: "Golfier",
-            gender: "male",
-            username: "michelgolfier",
+        url={`${BASE_URL}/biographie`}
+        ogType="profile"
+        profile={{ firstName: "Michel", lastName: "Golfier" }}
+        jsonLd={[
+          {
+            "@type": "WebPage",
+            "@id": `${BASE_URL}/biographie#webpage`,
+            url: `${BASE_URL}/biographie`,
+            name: "Michel Golfier | Biographie",
+            isPartOf: { "@id": WEBSITE_ID },
+            mainEntity: { "@id": PERSON_ID },
           },
-        }}
+          personSchema,
+          breadcrumbSchema([
+            { name: "Accueil", item: BASE_URL },
+            { name: "Biographie" },
+          ]),
+        ]}
       />
       <Layout
         wrapperProps={{
