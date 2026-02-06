@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Button,
   Box,
@@ -36,7 +36,7 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
   const router = useRouter();
 
   // Initialize page from URL query param
-  const initialPage = (() => {
+  const pageNumber = (() => {
     const q = router.query.page;
     if (typeof q === "string") {
       const n = parseInt(q, 10);
@@ -46,39 +46,32 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
   })();
 
   const [numPages, setNumPages] = useState(1);
-  const [pageNumber, setPageNumber] = useState(initialPage);
   const [selectedItem, setSelectedItem] = useState<number>(0);
   const plainDescription = book.summary
     .replace(/<[^>]*>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 
-  // Update page number when URL query param changes
-  useEffect(() => {
-    const q = router.query.page;
-    if (typeof q === "string") {
-      const n = parseInt(q, 10);
-      if (n >= 1 && n !== pageNumber) {
-        setPageNumber(n);
+  const onDocumentLoadSuccess = useCallback(
+    ({ numPages: n }: { numPages: number }) => {
+      setNumPages(n);
+      // Clamp initial page if it exceeds actual page count
+      if (pageNumber > n) {
+        const url = `/ouvrages/${book.key}?page=${n}`;
+        router.replace(url, undefined, { shallow: true });
       }
-    } else if (!q && pageNumber !== 1) {
-      // Reset to page 1 if no page param in URL
-      setPageNumber(1);
-    }
-  }, [router.query.page, pageNumber]);
+    },
+    [pageNumber, book.key, router]
+  );
 
-  const onDocumentLoadSuccess = useCallback(({ numPages: n }: { numPages: number }) => {
-    setNumPages(n);
-    // Clamp initial page if it exceeds actual page count
-    if (initialPage > n) setPageNumber(n);
-  }, [initialPage]);
-
-  const onPageChange = useCallback((page: number) => {
-    setPageNumber(page);
-    // Update URL without full navigation (shallow)
-    const url = `/ouvrages/${book.key}${page > 1 ? `?page=${page}` : ""}`;
-    router.replace(url, undefined, { shallow: true });
-  }, [book.key, router]);
+  const onPageChange = useCallback(
+    (page: number) => {
+      // Update URL without full navigation (shallow)
+      const url = `/ouvrages/${book.key}${page > 1 ? `?page=${page}` : ""}`;
+      router.replace(url, undefined, { shallow: true });
+    },
+    [book.key, router]
+  );
 
   return (
     <>

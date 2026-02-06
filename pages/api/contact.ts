@@ -27,7 +27,7 @@ function isRateLimited(ip: string): boolean {
 // Détection de spam : caractères aléatoires sans espaces ni sens
 function looksLikeSpam(text: string): boolean {
   // Si le texte contient trop de majuscules aléatoires mélangées
-  const randomPattern = /^[A-Za-z]{15,}$/;
+  const randomPattern = /^[A-Za-z]{25,}$/;
   if (randomPattern.test(text.trim())) {
     return true;
   }
@@ -46,7 +46,7 @@ const ContactBody = z.object({
   email: z.string().email(),
   message: z.string().min(10).max(50000),
   // Honeypot : ce champ doit rester vide (les bots le remplissent)
-  website: z.string().max(0).optional(),
+  website: z.string().optional(),
 });
 
 export type ContactBody = z.infer<typeof ContactBody>;
