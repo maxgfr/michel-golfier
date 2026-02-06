@@ -1,7 +1,18 @@
-import { Box, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalCloseButton,
+  ModalBody,
+  IconButton,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { SearchIcon } from "@chakra-ui/icons";
 import Image from "next/image";
 import NextLink from "next/link";
-import type { ElementType, ReactElement } from "react";
+import type { ElementType, MouseEvent, ReactElement } from "react";
 
 type Props = {
   summary: Array<string>;
@@ -22,6 +33,14 @@ export function Book({
   href,
   titleAs,
 }: Props): ReactElement {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const handleZoom = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onOpen();
+  };
+
   const content = (
     <Box
       display="flex"
@@ -65,6 +84,20 @@ export function Book({
               height: "auto",
               boxShadow: "4px 4px 15px rgba(0,0,0,0.2)",
             }}
+          />
+          <IconButton
+            aria-label="Agrandir la couverture"
+            icon={<SearchIcon />}
+            size="sm"
+            position="absolute"
+            bottom={3}
+            right={3}
+            colorScheme="blackAlpha"
+            bg="blackAlpha.600"
+            color="white"
+            borderRadius="full"
+            _hover={{ bg: "blackAlpha.800" }}
+            onClick={handleZoom}
           />
         </Box>
       )}
@@ -110,11 +143,81 @@ export function Book({
 
   if (href) {
     return (
-      <NextLink href={href} style={{ textDecoration: "none", display: "block" }}>
-        {content}
-      </NextLink>
+      <>
+        <NextLink href={href} style={{ textDecoration: "none", display: "block" }}>
+          {content}
+        </NextLink>
+        {image && (
+          <Modal isOpen={isOpen} onClose={onClose} size="xl" isCentered>
+            <ModalOverlay bg="blackAlpha.700" />
+            <ModalContent bg="transparent" boxShadow="none" maxW="90vw" maxH="90vh">
+              <ModalCloseButton
+                color="white"
+                bg="blackAlpha.600"
+                borderRadius="full"
+                _hover={{ bg: "blackAlpha.800" }}
+                zIndex={1}
+                top={-2}
+                right={-2}
+              />
+              <ModalBody display="flex" justifyContent="center" alignItems="center" p={0}>
+                <Image
+                  src={image}
+                  alt={title}
+                  width={800}
+                  height={1131}
+                  style={{
+                    objectFit: "contain",
+                    maxWidth: "100%",
+                    maxHeight: "85vh",
+                    height: "auto",
+                    borderRadius: "4px",
+                    boxShadow: "0 8px 40px rgba(0,0,0,0.4)",
+                  }}
+                />
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+        )}
+      </>
     );
   }
 
-  return content;
+  return (
+    <>
+      {content}
+      {image && (
+        <Modal isOpen={isOpen} onClose={onClose} size="xl" isCentered>
+          <ModalOverlay bg="blackAlpha.700" />
+          <ModalContent bg="transparent" boxShadow="none" maxW="90vw" maxH="90vh">
+            <ModalCloseButton
+              color="white"
+              bg="blackAlpha.600"
+              borderRadius="full"
+              _hover={{ bg: "blackAlpha.800" }}
+              zIndex={1}
+              top={-2}
+              right={-2}
+            />
+            <ModalBody display="flex" justifyContent="center" alignItems="center" p={0}>
+              <Image
+                src={image}
+                alt={title}
+                width={800}
+                height={1131}
+                style={{
+                  objectFit: "contain",
+                  maxWidth: "100%",
+                  maxHeight: "85vh",
+                  height: "auto",
+                  borderRadius: "4px",
+                  boxShadow: "0 8px 40px rgba(0,0,0,0.4)",
+                }}
+              />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      )}
+    </>
+  );
 }

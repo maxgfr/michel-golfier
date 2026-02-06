@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Document, Page as PdfPage, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
@@ -18,18 +19,36 @@ type Props = {
 };
 
 function computeWidth() {
-  if (typeof window === "undefined") return 500;
+  if (typeof window === "undefined") return 650;
   const vw = window.innerWidth;
-  // Mobile: nearly full width. Tablet: comfortable. Desktop: compact for side-by-side
+  const vh = window.innerHeight;
+  // Mobile: nearly full width
   if (vw < 640) return vw - 32;
-  if (vw < 1024) return Math.min(vw - 64, 560);
-  return Math.min(vw * 0.4, 560);
+  // Tablet: comfortable width
+  if (vw < 1024) return Math.min(vw - 64, 650);
+  // Desktop: balance between readability and side-by-side layout
+  // Use viewport height to ensure PDF fits on screen
+  const widthBasedOnViewport = Math.min(vw * 0.5, 750);
+  const widthBasedOnHeight = (vh - 300) * 0.7; // Accounting for header, controls, etc.
+  return Math.min(widthBasedOnViewport, widthBasedOnHeight, 750);
+}
+
+function computeFullscreenWidth() {
+  if (typeof window === "undefined") return 900;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  // Use most of the viewport but keep some padding
+  const widthFromVw = vw - 120;
+  const widthFromVh = (vh - 100) * 0.75;
+  return Math.min(widthFromVw, widthFromVh, 1200);
 }
 
 const BookReader = ({ path, pageNumber, numPages, onLoadSuccess, onPageChange }: Props) => {
   const [width, setWidth] = useState(computeWidth);
+  const [fullscreenWidth, setFullscreenWidth] = useState(computeFullscreenWidth);
   const [isLoading, setIsLoading] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const transitionTimer = useRef<ReturnType<typeof setTimeout>>(null);
 
@@ -44,6 +63,7 @@ const BookReader = ({ path, pageNumber, numPages, onLoadSuccess, onPageChange }:
   // Responsive resize
   const handleResize = useCallback(() => {
     setWidth(computeWidth());
+    setFullscreenWidth(computeFullscreenWidth());
   }, []);
 
   useEffect(() => {
@@ -57,6 +77,11 @@ const BookReader = ({ path, pageNumber, numPages, onLoadSuccess, onPageChange }:
       // Don't capture when user is typing in an input
       if (e.target instanceof HTMLInputElement) return;
 
+      if (e.key === "Escape" && isFullscreen) {
+        e.preventDefault();
+        setIsFullscreen(false);
+        return;
+      }
       if (e.key === "ArrowRight" || e.key === "ArrowDown") {
         e.preventDefault();
         if (pageNumber < numPages) changePage(pageNumber + 1);
@@ -73,7 +98,17 @@ const BookReader = ({ path, pageNumber, numPages, onLoadSuccess, onPageChange }:
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [pageNumber, numPages, changePage]);
+  }, [pageNumber, numPages, changePage, isFullscreen]);
+
+  // Lock body scroll when fullscreen
+  useEffect(() => {
+    if (isFullscreen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [isFullscreen]);
 
   // Progress percentage
   const progress = useMemo(() => {
@@ -370,6 +405,27 @@ const BookReader = ({ path, pageNumber, numPages, onLoadSuccess, onPageChange }:
         >
           &#8677;
         </button>
+
+        {/* Fullscreen / Zoom */}
+        <button
+          type="button"
+          onClick={() => setIsFullscreen(true)}
+          style={{
+            background: "none",
+            border: "1px solid #d4c5a9",
+            borderRadius: 4,
+            padding: "6px 14px",
+            cursor: "pointer",
+            color: "#5c4729",
+            fontSize: 13,
+            transition: "all 0.2s",
+            marginLeft: 4,
+          }}
+          aria-label="Agrandir la page"
+          title="Agrandir la page"
+        >
+          &#x26F6; Zoom
+        </button>
       </div>
 
       {/* Keyboard hint */}
@@ -382,6 +438,177 @@ const BookReader = ({ path, pageNumber, numPages, onLoadSuccess, onPageChange }:
       }}>
         Utilisez les flèches <kbd style={{ padding: "1px 5px", border: "1px solid #d4c5a9", borderRadius: 3, fontSize: 10 }}>&#8592;</kbd> <kbd style={{ padding: "1px 5px", border: "1px solid #d4c5a9", borderRadius: 3, fontSize: 10 }}>&#8594;</kbd> ou cliquez sur les côtés de la page
       </p>
+
+      {/* Fullscreen overlay — rendered via portal to escape stacking context */}
+      {isFullscreen && createPortal(
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9999,
+            backgroundColor: "rgba(0,0,0,0.85)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 16,
+          }}
+          onClick={(e) => {
+            // Close when clicking on the backdrop
+            if (e.target === e.currentTarget) setIsFullscreen(false);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") setIsFullscreen(false);
+          }}
+          role="dialog"
+          aria-label="Page en plein écran"
+        >
+          {/* Close button */}
+          <button
+            type="button"
+            onClick={() => setIsFullscreen(false)}
+            style={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+              background: "rgba(255,255,255,0.15)",
+              border: "none",
+              borderRadius: "50%",
+              width: 40,
+              height: 40,
+              cursor: "pointer",
+              color: "white",
+              fontSize: 20,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "background 0.2s",
+              zIndex: 1,
+            }}
+            aria-label="Fermer"
+            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.3)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.15)"; }}
+          >
+            &#10005;
+          </button>
+
+          {/* PDF page in large */}
+          <div style={{ position: "relative", display: "flex", justifyContent: "center" }}>
+            {/* Click-to-navigate zones */}
+            <button
+              type="button"
+              onClick={goBack}
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                width: "35%",
+                height: "100%",
+                zIndex: 2,
+                cursor: pageNumber > 1 ? "w-resize" : "default",
+                background: "none",
+                border: "none",
+                padding: 0,
+              }}
+              aria-label="Page précédente"
+              tabIndex={-1}
+            />
+            <button
+              type="button"
+              onClick={goNext}
+              style={{
+                position: "absolute",
+                right: 0,
+                top: 0,
+                width: "35%",
+                height: "100%",
+                zIndex: 2,
+                cursor: pageNumber < numPages ? "e-resize" : "default",
+                background: "none",
+                border: "none",
+                padding: 0,
+              }}
+              aria-label="Page suivante"
+              tabIndex={-1}
+            />
+            <Document file={path} options={PDF_OPTIONS} loading={<></>} error={<></>}>
+              <PdfPage
+                pageNumber={pageNumber}
+                width={fullscreenWidth}
+                renderAnnotationLayer={false}
+                renderTextLayer={false}
+              />
+            </Document>
+          </div>
+
+          {/* Fullscreen controls */}
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 10,
+            marginTop: 16,
+          }}>
+            <button
+              type="button"
+              onClick={goBack}
+              disabled={pageNumber <= 1}
+              style={{
+                background: "rgba(255,255,255,0.12)",
+                border: "1px solid rgba(255,255,255,0.25)",
+                borderRadius: 4,
+                padding: "6px 14px",
+                cursor: pageNumber <= 1 ? "default" : "pointer",
+                opacity: pageNumber <= 1 ? 0.3 : 1,
+                color: "white",
+                fontSize: 13,
+                transition: "all 0.2s",
+              }}
+              aria-label="Page précédente"
+            >
+              &#8592; Précédent
+            </button>
+            <span style={{
+              fontSize: 14,
+              color: "rgba(255,255,255,0.7)",
+              fontVariantNumeric: "tabular-nums",
+              userSelect: "none",
+            }}>
+              {pageNumber}&nbsp;/&nbsp;{numPages}
+            </span>
+            <button
+              type="button"
+              onClick={goNext}
+              disabled={pageNumber >= numPages}
+              style={{
+                background: "rgba(255,255,255,0.12)",
+                border: "1px solid rgba(255,255,255,0.25)",
+                borderRadius: 4,
+                padding: "6px 14px",
+                cursor: pageNumber >= numPages ? "default" : "pointer",
+                opacity: pageNumber >= numPages ? 0.3 : 1,
+                color: "white",
+                fontSize: 13,
+                transition: "all 0.2s",
+              }}
+              aria-label="Page suivante"
+            >
+              Suivant &#8594;
+            </button>
+          </div>
+
+          {/* Hint */}
+          <p style={{
+            marginTop: 8,
+            fontSize: 11,
+            color: "rgba(255,255,255,0.4)",
+            textAlign: "center",
+          }}>
+            Appuyez sur <kbd style={{ padding: "1px 5px", border: "1px solid rgba(255,255,255,0.25)", borderRadius: 3, fontSize: 10 }}>Esc</kbd> pour fermer
+          </p>
+        </div>,
+        document.body,
+      )}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Button,
   Box,
@@ -52,6 +52,20 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
     .replace(/<[^>]*>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+
+  // Update page number when URL query param changes
+  useEffect(() => {
+    const q = router.query.page;
+    if (typeof q === "string") {
+      const n = parseInt(q, 10);
+      if (n >= 1 && n !== pageNumber) {
+        setPageNumber(n);
+      }
+    } else if (!q && pageNumber !== 1) {
+      // Reset to page 1 if no page param in URL
+      setPageNumber(1);
+    }
+  }, [router.query.page, pageNumber]);
 
   const onDocumentLoadSuccess = useCallback(({ numPages: n }: { numPages: number }) => {
     setNumPages(n);
@@ -238,22 +252,6 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
                 color: "warmGray.700",
               }}
             />
-
-            {book.offerUrl && (
-              <Box mt={6}>
-                <Link
-                  href={book.offerUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  color="brand.600"
-                  fontWeight="600"
-                  _hover={{ color: "brand.800" }}
-                >
-                  Acheter ce livre
-                  <ExternalLinkIcon mx="5px" />
-                </Link>
-              </Box>
-            )}
           </Box>
         </Box>
 
