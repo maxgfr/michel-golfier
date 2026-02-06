@@ -1,15 +1,15 @@
-import { Baloo_Bhaijaan_2, Oooh_Baby } from 'next/font/google';
+import { Playfair_Display, Crimson_Text } from 'next/font/google';
 
-export const balooBhaijaan = Baloo_Bhaijaan_2({
+export const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
   weight: ['400', '600', '700'],
   display: 'swap',
-  variable: '--font-baloo',
+  variable: '--font-playfair',
 });
 
-export const ooohBaby = Oooh_Baby({
+export const crimsonText = Crimson_Text({
   subsets: ['latin'],
-  weight: ['400'],
+  weight: ['400', '600', '700'],
   display: 'swap',
-  variable: '--font-oooh',
+  variable: '--font-crimson',
 });

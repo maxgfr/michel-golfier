@@ -7,61 +7,147 @@ const config: ThemeConfig = {
 
 const theme = extendTheme({
   config,
-  fonts: {
-    heading: 'var(--font-oooh), cursive',
-    body: 'var(--font-baloo), sans-serif',
-  },
+
   colors: {
-    // Brand colors with improved contrast
-    blue: {
-      50: "#e3f2fd",
-      100: "#bbdefb",
-      200: "#90caf9",
-      300: "#64b5f6",
-      400: "#42a5f5",
-      500: "#2196f3", // Primary blue with WCAG AA contrast
-      600: "#1e88e5",
-      700: "#1976d2",
-      800: "#1565c0",
-      900: "#0d47a1",
+    brand: {
+      50: "#faf6f0",
+      100: "#f0e6d2",
+      200: "#e0cba5",
+      300: "#d4b87e",
+      400: "#c49a5c",
+      500: "#8b6f47",
+      600: "#7a5f3a",
+      700: "#5c4729",
+      800: "#3d2b1f",
+      900: "#2a1d14",
+    },
+    warmGray: {
+      50: "#faf8f5",
+      100: "#f5f0e8",
+      200: "#e8dfd2",
+      300: "#d4c5a9",
+      400: "#b8a88a",
+      500: "#8c7a62",
+      600: "#6b5c48",
+      700: "#4a3f32",
+      800: "#332b22",
+      900: "#1e1a15",
+    },
+    parchment: {
+      50: "#fefcf8",
+      100: "#faf6ed",
+      200: "#f5eed8",
+      300: "#ede2c2",
+      400: "#e0d0a0",
     },
   },
+
+  fonts: {
+    heading: 'var(--font-playfair), "Playfair Display", "Georgia", serif',
+    body: 'var(--font-crimson), "Crimson Text", "Georgia", serif',
+  },
+
+  fontSizes: {
+    xs: "0.75rem",
+    sm: "0.875rem",
+    md: "1.05rem",
+    lg: "1.15rem",
+    xl: "1.3rem",
+    "2xl": "1.6rem",
+    "3xl": "2rem",
+    "4xl": "2.5rem",
+    "5xl": "3.25rem",
+    "6xl": "4rem",
+  },
+
+  lineHeights: {
+    normal: "normal",
+    none: 1,
+    shorter: 1.25,
+    short: 1.375,
+    base: 1.5,
+    tall: 1.75,
+    taller: "2",
+  },
+
   styles: {
     global: {
-      // Ensure sufficient contrast for text
       body: {
-        bg: "gray.50",
-        color: "gray.800",
-      },
-      // Focus visible styles for keyboard navigation
-      "*:focus-visible": {
-        outline: "2px solid",
-        outlineColor: "blue.500",
-        outlineOffset: "2px",
+        bg: "parchment.50",
+        color: "warmGray.800",
       },
     },
   },
+
   components: {
     Button: {
-      defaultProps: {
-        colorScheme: "blue",
-      },
       baseStyle: {
         fontWeight: "600",
-        borderRadius: "md",
+        fontFamily: "body",
+        borderRadius: "sm",
+        letterSpacing: "0.02em",
+      },
+      variants: {
+        solid: {
+          bg: "brand.600",
+          color: "white",
+          _hover: {
+            bg: "brand.700",
+            transform: "translateY(-1px)",
+            shadow: "md",
+          },
+          _active: {
+            bg: "brand.800",
+            transform: "translateY(0)",
+          },
+        },
+        outline: {
+          borderColor: "brand.500",
+          color: "brand.700",
+          _hover: {
+            bg: "brand.50",
+          },
+        },
+        ghost: {
+          color: "brand.700",
+          _hover: {
+            bg: "parchment.200",
+          },
+        },
+      },
+      defaultProps: {
+        variant: "solid",
       },
     },
     Link: {
       baseStyle: {
-        color: "blue.600", // Darker blue for better contrast
+        color: "brand.600",
+        transition: "all 0.2s",
         _hover: {
-          color: "blue.700",
-          textDecoration: "underline",
+          color: "brand.800",
+          textDecoration: "none",
         },
-        _focusVisible: {
-          outline: "2px solid",
-          outlineColor: "blue.500",
-          outlineOffset: "2px",
+      },
+    },
+    Input: {
+      variants: {
+        outline: {
+          field: {
+            borderColor: "warmGray.300",
+            bg: "white",
+            _hover: { borderColor: "brand.400" },
+            _focus: { borderColor: "brand.500", boxShadow: "0 0 0 1px #8b6f47" },
+          },
+        },
+      },
+    },
+    Textarea: {
+      variants: {
+        outline: {
+          borderColor: "warmGray.300",
+          bg: "white",
+          _hover: { borderColor: "brand.400" },
+          _focus: { borderColor: "brand.500", boxShadow: "0 0 0 1px #8b6f47" },
         },
       },
     },

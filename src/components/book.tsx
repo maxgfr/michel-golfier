@@ -1,6 +1,7 @@
 import { Box, Text } from "@chakra-ui/react";
 import Image from "next/image";
-import type { ElementType } from "react";
+import NextLink from "next/link";
+import type { ElementType, ReactElement } from "react";
 
 type Props = {
   summary: Array<string>;
@@ -11,6 +12,7 @@ type Props = {
   href?: string;
   titleAs?: ElementType | undefined;
 };
+
 export function Book({
   summary,
   title,
@@ -19,53 +21,100 @@ export function Book({
   isReverse = false,
   href,
   titleAs,
-}: Props): JSX.Element {
-  return (
+}: Props): ReactElement {
+  const content = (
     <Box
-      as={href ? "a" : "div"}
       display="flex"
       flexDirection={{
-        base: "column-reverse",
+        base: "column",
         md: isReverse ? "row-reverse" : "row",
       }}
-      backgroundColor="#faf9f9"
-      borderRadius={10}
-      padding={5}
-      {...(href ? { href } : {})}
+      bg="white"
+      borderRadius="sm"
+      border="1px solid"
+      borderColor="warmGray.200"
+      overflow="hidden"
+      transition="all 0.3s ease"
+      _hover={href ? {
+        shadow: "lg",
+        borderColor: "brand.300",
+        transform: "translateY(-3px)",
+      } : undefined}
+      cursor={href ? "pointer" : "default"}
       {...wrapperProps}
     >
       {image && (
         <Box
-          marginTop={{ base: 4, md: 0 }}
-          marginRight={{ md: 4 }}
+          flexShrink={0}
           position="relative"
-          minWidth={{ base: "100px", sm: "200px", md: "300px" }}
-          aspectRatio={210 / 297}
+          bg="parchment.200"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          p={6}
+          width={{ base: "100%", md: "280px" }}
         >
           <Image
             src={image}
             alt={title}
-            fill
-            style={{ objectFit: "cover" }}
-            sizes="(max-width: 768px) 200px, 300px"
+            width={220}
+            height={311}
+            style={{
+              objectFit: "contain",
+              maxWidth: "220px",
+              height: "auto",
+              boxShadow: "4px 4px 15px rgba(0,0,0,0.2)",
+            }}
           />
         </Box>
       )}
-      <Box display="flex" flexDirection="column">
+      <Box
+        display="flex"
+        flexDirection="column"
+        p={{ base: 5, md: 8 }}
+        flex={1}
+      >
         <Text
           as={titleAs ?? "p"}
-          fontFamily="Oooh Baby"
-          fontWeight="600"
-          fontSize="4xl"
+          fontFamily="heading"
+          fontWeight="700"
+          fontSize={{ base: "xl", md: "2xl" }}
+          lineHeight="shorter"
+          mb={4}
+          color="brand.800"
+          fontStyle="italic"
         >
           {title}
         </Text>
+        {/* Decorative divider */}
+        <Box
+          width="50px"
+          height="1px"
+          bg="brand.400"
+          mb={4}
+        />
         {summary.map((line, i) => (
-          <Text key={i} marginTop={4}>
+          <Text
+            key={`summary-${i}`}
+            mt={i > 0 ? 3 : 0}
+            fontSize="md"
+            lineHeight="tall"
+            color="warmGray.700"
+          >
             {line}
           </Text>
         ))}
       </Box>
     </Box>
   );
+
+  if (href) {
+    return (
+      <NextLink href={href} style={{ textDecoration: "none", display: "block" }}>
+        {content}
+      </NextLink>
+    );
+  }
+
+  return content;
 }

@@ -7,6 +7,7 @@ import {
   Input,
   Text,
   Textarea,
+  useToast,
 } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { Layout } from "../src/components/layout";
@@ -35,7 +36,7 @@ type FormValues = {
   name: string;
   email: string;
   message: string;
-  website: string; // Honeypot anti-bot
+  website: string;
 };
 
 enum Status {
@@ -47,32 +48,47 @@ enum Status {
 const Page: NextPage = () => {
   const initialValues: FormValues = { name: "", email: "", message: "", website: "" };
   const [status, setStatus] = useState<Status>(Status.IDLE);
+  const toast = useToast();
 
   const onSubmit = async (values: FormValues, actions: any): Promise<void> => {
     setStatus(Status.IDLE);
-    await fetch("/api/contact", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    })
-      .then(response => {
-        console.log(response);
-        if (response.ok) {
-          return response.json();
-        }
-        return Promise.reject(response);
-      })
-      .then(() => {
-        setStatus(Status.SUCCESS);
-      })
-      .catch(() => {
-        setStatus(Status.ERROR);
-      })
-      .finally(() => {
-        actions.setSubmitting(false);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
       });
+
+      if (response.ok) {
+        setStatus(Status.SUCCESS);
+        toast({
+          title: "Message envoyé !",
+          description: "Merci pour votre message. Je vous répondrai bientôt.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+        actions.resetForm();
+      } else {
+        throw new Error("Erreur d'envoi");
+      }
+    } catch (error) {
+      setStatus(Status.ERROR);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'envoi. Veuillez réessayer.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    } finally {
+      actions.setSubmitting(false);
+    }
   };
 
   return (
@@ -98,9 +114,29 @@ const Page: NextPage = () => {
         ]}
       />
       <Layout>
-        <Text as="h1" fontFamily="Oooh Baby" fontWeight="600" fontSize="4xl">
-          Contactez-moi via ce formulaire
-        </Text>
+        {/* Page title */}
+        <Box textAlign="center" mb={10}>
+          <Text
+            as="h1"
+            fontFamily="heading"
+            fontWeight="700"
+            fontSize={{ base: "3xl", md: "4xl" }}
+            color="brand.800"
+            fontStyle="italic"
+          >
+            Contact
+          </Text>
+          <Box display="flex" alignItems="center" justifyContent="center" my={4}>
+            <Box flex={1} maxW="60px" h="1px" bg="brand.300" />
+            <Text mx={4} color="brand.400" fontSize="lg">&#9671;</Text>
+            <Box flex={1} maxW="60px" h="1px" bg="brand.300" />
+          </Box>
+          <Text fontSize="md" color="warmGray.600" fontStyle="italic">
+            N&rsquo;hésitez pas à me contacter pour toute question sur mes ouvrages.
+          </Text>
+        </Box>
+
+        <Box maxW="600px" mx="auto">
         <Formik
           onSubmit={onSubmit}
           initialValues={initialValues}
@@ -148,7 +184,6 @@ const Page: NextPage = () => {
                   </FormControl>
                 )}
               </Field>
-              {/* Honeypot anti-bot : champ caché que seuls les bots remplissent */}
               <Field name="website">
                 {({ field }: any) => (
                   <Box
@@ -179,7 +214,7 @@ const Page: NextPage = () => {
               </Button>
               {status === Status.SUCCESS && (
                 <Box mt={4}>
-                  <Text color="#267808" fontWeight="600">
+                  <Text color="green.600" fontWeight="600">
                     Votre message a bien été envoyé, je vous répondrai dans les
                     plus brefs délais.
                   </Text>
@@ -187,7 +222,7 @@ const Page: NextPage = () => {
               )}
               {status === Status.ERROR && (
                 <Box mt={4}>
-                  <Text color="#e71313" fontWeight="600">
+                  <Text color="red.600" fontWeight="600">
                     Une erreur est survenue lors de l&apos;envoi de votre
                     message, veuillez réessayer plus tard.
                   </Text>
@@ -196,6 +231,7 @@ const Page: NextPage = () => {
             </Form>
           )}
         </Formik>
+        </Box>
       </Layout>
     </>
   );

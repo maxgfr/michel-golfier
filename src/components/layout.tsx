@@ -7,10 +7,14 @@ type Props = {
   wrapperProps?: Record<string, any>;
 };
 
-export function Layout({ children, wrapperProps }: Props): JSX.Element {
+export function Layout({ children, wrapperProps }: Props): React.JSX.Element {
   return (
     <Box
-      padding={10}
+      as="main"
+      maxWidth="1100px"
+      mx="auto"
+      px={{ base: 5, md: 10 }}
+      py={{ base: 8, md: 12 }}
       minHeight={`calc(100vh - ${FooterHeight} - ${HeaderHeight})`}
       {...wrapperProps}
     >

@@ -22,8 +22,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
 
       - name: Get pnpm store directory
         shell: bash
@@ -43,6 +43,9 @@ jobs:
 
       - name: Run linter
         run: pnpm lint
+
+      - name: Run typescript checks
+        run: pnpm typecheck
 
       - name: Build application
         run: pnpm build

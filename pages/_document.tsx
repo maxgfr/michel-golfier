@@ -7,7 +7,7 @@ import Document, {
   DocumentInitialProps,
 } from "next/document";
 import React, { ReactElement } from "react";
-import { balooBhaijaan, ooohBaby } from "../src/fonts";
+import { crimsonText, playfairDisplay } from "../src/fonts";
 
 export default class MyDocument extends Document {
   static async getInitialProps(
@@ -20,7 +20,7 @@ export default class MyDocument extends Document {
 
   render(): ReactElement {
     return (
-      <Html lang="fr-FR" className={`${balooBhaijaan.variable} ${ooohBaby.variable}`}>
+      <Html lang="fr-FR" className={`${playfairDisplay.variable} ${crimsonText.variable}`}>
         <Head />
         <body>
           <Main />

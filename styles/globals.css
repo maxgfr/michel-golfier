@@ -4,3 +4,43 @@ body {
   margin: 0;
   height: 100%;
 }
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Better focus for keyboard navigation */
+:focus-visible {
+  outline: 2px solid #8b6f47;
+  outline-offset: 2px;
+}
+
+/* Decorative horizontal rule */
+hr {
+  border: none;
+  border-top: 1px solid #d4c5a9;
+  margin: 2rem auto;
+  width: 60%;
+}
+
+/* Selection color */
+::selection {
+  background-color: #d4c5a9;
+  color: #3d2b1f;
+}

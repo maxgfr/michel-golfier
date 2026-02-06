@@ -1,15 +1,9 @@
-import { useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Button,
   Box,
-  Stack,
   Link,
   Text,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
 } from "@chakra-ui/react";
 import Image from "next/image";
 import xss from "xss";
@@ -18,56 +12,59 @@ import {
   ArrowRightIcon,
   ExternalLinkIcon,
 } from "@chakra-ui/icons";
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
 import type { GetStaticPropsContext, NextPage } from "next";
+import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
 import { Layout } from "../../src/components/layout";
-import { useDimensions } from "../../src/hooks/useDimensions";
 import { SEO } from "../../src/components/seo";
 import { BASE_URL } from "../../src/config";
-import { Book, Book1992, Book1998, Book2017 } from "../../src/data";
+import { type Book, Book1992, Book1998, Book2017 } from "../../src/data";
 import { PERSON_ID, WEBSITE_ID, breadcrumbSchema, entityToSchema } from "../../src/utils/jsonld";
-import PDFViewer from "../../src/components/pdf";
+
+const BookReader = dynamic(() => import("../../src/components/pdf"), {
+  ssr: false,
+  loading: () => (
+    <Box display="flex" justifyContent="center" alignItems="center" minH="400px">
+      <Text color="warmGray.500" fontStyle="italic">Chargement du lecteur&hellip;</Text>
+    </Box>
+  ),
+});
 
 const Page: NextPage<{ book: Book }> = ({ book }) => {
+  const router = useRouter();
+
+  // Initialize page from URL query param
+  const initialPage = (() => {
+    const q = router.query.page;
+    if (typeof q === "string") {
+      const n = parseInt(q, 10);
+      if (n >= 1) return n;
+    }
+    return 1;
+  })();
+
   const [numPages, setNumPages] = useState(1);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [sliderValue, setSliderValue] = useState<string | number>("1");
+  const [pageNumber, setPageNumber] = useState(initialPage);
   const [selectedItem, setSelectedItem] = useState<number>(0);
-  const targetRef = useRef<HTMLDivElement>(null);
-  const size = useDimensions(targetRef);
   const plainDescription = book.summary
     .replace(/<[^>]*>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    setNumPages(numPages);
-  };
+  const onDocumentLoadSuccess = useCallback(({ numPages: n }: { numPages: number }) => {
+    setNumPages(n);
+    // Clamp initial page if it exceeds actual page count
+    if (initialPage > n) setPageNumber(n);
+  }, [initialPage]);
 
-  const onGoBack = () => {
-    const newValue = pageNumber - 1;
-    if (pageNumber > 1) {
-      setPageNumber(newValue);
-      setSliderValue(String(newValue));
-    }
-  };
-
-  const onGoNext = () => {
-    const newValue = pageNumber + 1;
-    if (pageNumber < numPages) {
-      setPageNumber(newValue);
-      setSliderValue(String(newValue));
-    }
-  };
-
-  const onInputChange = (value: string | number) => {
-    setSliderValue(value);
-    const parseValue = typeof value === "string" ? parseInt(value, 10) : value;
-    if (parseValue > 0 && parseValue <= numPages) {
-      setPageNumber(parseValue);
-    }
-  };
+  const onPageChange = useCallback((page: number) => {
+    setPageNumber(page);
+    // Update URL without full navigation (shallow)
+    const url = `/ouvrages/${book.key}${page > 1 ? `?page=${page}` : ""}`;
+    router.replace(url, undefined, { shallow: true });
+  }, [book.key, router]);
 
   return (
     <>
@@ -133,57 +130,98 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
         ]}
       />
       <Layout>
-        <Box display="flex" flexDirection={{ base: "column", lg: "row" }}>
-          <Box
-            ref={targetRef}
-            flex={1}
-            display="flex"
-            justifyContent="center"
-            maxWidth={{ base: "90vw", lg: "45vw" }}
-            marginRight="2rem"
+        {/* ─── Book title ─── */}
+        <Box textAlign="center" mb={6}>
+          <Text
+            as="h1"
+            fontFamily="heading"
+            fontWeight="700"
+            fontSize={{ base: "xl", md: "3xl" }}
+            color="brand.800"
+            fontStyle="italic"
+            lineHeight="shorter"
           >
-            <PDFViewer
-              height={size.height}
-              width={size.width}
+            {book.title}
+          </Text>
+          <Box display="flex" alignItems="center" justifyContent="center" my={3}>
+            <Box flex={1} maxW="60px" h="1px" bg="brand.300" />
+            <Text mx={4} color="brand.400" fontSize="lg">&#9671;</Text>
+            <Box flex={1} maxW="60px" h="1px" bg="brand.300" />
+          </Box>
+          <Link
+            href={book.path}
+            target="_blank"
+            rel="noopener noreferrer"
+            color="brand.600"
+            fontSize="sm"
+            fontWeight="500"
+            _hover={{ color: "brand.800", textDecoration: "underline" }}
+          >
+            T&eacute;l&eacute;charger le PDF
+            <ExternalLinkIcon mx="4px" boxSize={3} />
+          </Link>
+        </Box>
+
+        {/* ─── Main content: PDF + Book info side by side ─── */}
+        <Box
+          display="flex"
+          flexDirection={{ base: "column", lg: "row" }}
+          gap={{ base: 8, lg: 10 }}
+          alignItems="flex-start"
+          mb={16}
+        >
+          {/* PDF Reader */}
+          <Box
+            flex="0 0 auto"
+            width={{ base: "100%", lg: "auto" }}
+            position={{ base: "relative", lg: "sticky" }}
+            top={{ lg: "90px" }}
+            bg="white"
+            border="1px solid"
+            borderColor="warmGray.200"
+            borderRadius="md"
+            boxShadow="0 2px 16px rgba(92, 71, 41, 0.08)"
+            p={{ base: 2, md: 3 }}
+          >
+            <BookReader
               path={book.path}
               pageNumber={pageNumber}
+              numPages={numPages}
               onLoadSuccess={onDocumentLoadSuccess}
+              onPageChange={onPageChange}
             />
           </Box>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            flex={1}
-          >
+
+          {/* Book Details */}
+          <Box flex={1} minW={0}>
             <Text
-              as="h1"
-              fontFamily="Oooh Baby"
+              fontFamily="heading"
               fontWeight="600"
-              fontSize="4xl"
-            >
-              {book.title}
-            </Text>
-            <Text
-              fontFamily="Oooh Baby"
-              fontWeight="600"
-              fontSize="3xl"
-              alignSelf="flex-start"
-              marginTop="2rem"
+              fontSize="2xl"
+              color="brand.800"
+              mb={4}
               as="h2"
             >
-              Résumé
+              R&eacute;sum&eacute;
             </Text>
             <Box
               dangerouslySetInnerHTML={{ __html: xss(book.summary) }}
-              marginTop="1rem"
+              sx={{
+                "& p, & br + br": { mb: 3 },
+                fontSize: "md",
+                lineHeight: "tall",
+                color: "warmGray.700",
+              }}
             />
+
+            <Box width="40px" height="1px" bg="brand.300" my={6} />
+
             <Text
-              fontFamily="Oooh Baby"
+              fontFamily="heading"
               fontWeight="600"
-              fontSize="3xl"
-              alignSelf="flex-start"
-              marginTop="2rem"
+              fontSize="2xl"
+              color="brand.800"
+              mb={4}
               as="h2"
             >
               Note
@@ -192,135 +230,93 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
               dangerouslySetInnerHTML={{
                 __html: xss(book.additionalInformation),
               }}
-              alignSelf="flex-start"
-              marginTop="1rem"
+              sx={{
+                "& em": { color: "warmGray.600" },
+                "& a": { color: "brand.600", textDecoration: "underline" },
+                fontSize: "md",
+                lineHeight: "tall",
+                color: "warmGray.700",
+              }}
             />
 
-            <Link href={book.path} isExternal marginTop="2rem">
-              Ouvrir ou télécharger le livre
-              <ExternalLinkIcon mx="5px" />
-            </Link>
-
-            <Box
-              display="flex"
-              flexDirection="row"
-              justifyContent="center"
-              alignItems="center"
-              marginTop="2rem"
-            >
-              <NumberInput
-                defaultValue={1}
-                min={1}
-                max={numPages}
-                value={sliderValue}
-                onChange={onInputChange}
-              >
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-
-              <Text marginLeft={5}>
-                Page {pageNumber} sur {numPages}
-              </Text>
-            </Box>
-
-            <Stack
-              direction="row"
-              spacing={4}
-              alignItems="center"
-              justifyContent="center"
-              marginTop="2rem"
-            >
-              <Button
-                leftIcon={<ArrowLeftIcon />}
-                variant="solid"
-                onClick={onGoBack}
-                name="Page précédente"
-                aria-label="Page précédente"
-              >
-                Page précédente
-              </Button>
-              <Button
-                rightIcon={<ArrowRightIcon />}
-                variant="solid"
-                onClick={onGoNext}
-                name="Page suivante"
-                aria-label="Page suivante"
-              >
-                Page suivante
-              </Button>
-            </Stack>
+            {book.offerUrl && (
+              <Box mt={6}>
+                <Link
+                  href={book.offerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  color="brand.600"
+                  fontWeight="600"
+                  _hover={{ color: "brand.800" }}
+                >
+                  Acheter ce livre
+                  <ExternalLinkIcon mx="5px" />
+                </Link>
+              </Box>
+            )}
           </Box>
         </Box>
-        <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          marginTop="2rem"
-        >
-          <Text
-            as="h2"
-            fontFamily="Oooh Baby"
-            fontWeight="600"
-            fontSize="4xl"
-            textAlign="center"
-          >
-            Presse
-          </Text>
+
+        {/* ─── Press section ─── */}
+        <Box mb={8}>
+          <Box textAlign="center" mb={8}>
+            <Text
+              as="h2"
+              fontFamily="heading"
+              fontWeight="600"
+              fontSize={{ base: "2xl", md: "3xl" }}
+              color="brand.800"
+            >
+              Presse
+            </Text>
+            <Box width="40px" height="1px" bg="brand.400" mx="auto" mt={3} />
+          </Box>
 
           {book.images.length > 1 && (
-            <Stack
-              direction="row"
-              spacing={4}
+            <Box
+              display="flex"
+              gap={4}
               alignItems="center"
               justifyContent="center"
-              marginTop="2rem"
+              mb={4}
             >
               <Button
-                leftIcon={<ArrowLeftIcon />}
-                variant="solid"
+                size="sm"
+                variant="outline"
                 onClick={() => setSelectedItem(selectedItem - 1)}
-                name="Article précédent"
-                aria-label="Article précédent"
+                aria-label="Article pr&eacute;c&eacute;dent"
               >
-                Article précédent
+                <ArrowLeftIcon mr={2} />
+                Pr&eacute;c&eacute;dent
               </Button>
               <Button
-                rightIcon={<ArrowRightIcon />}
-                variant="solid"
+                size="sm"
+                variant="outline"
                 onClick={() => setSelectedItem(selectedItem + 1)}
-                name="Article suivant"
                 aria-label="Article suivant"
               >
-                Article suivant
+                Suivant
+                <ArrowRightIcon ml={2} />
               </Button>
-            </Stack>
+            </Box>
           )}
-          <Box
-            width={{ base: "100%", md: "80vw", lg: "60vw" }}
-            height="auto"
-            alignSelf="center"
-            marginTop="1rem"
-          >
+          <Box maxWidth="800px" mx="auto">
             <Carousel
-              ariaLabel="Carousel d'images"
+              ariaLabel="Carousel d'images de presse"
               infiniteLoop={true}
               autoPlay={false}
               onChange={v => setSelectedItem(v)}
               selectedItem={selectedItem}
               showThumbs={false}
             >
-              {book.images.map((img, index) => (
-                <div key={index} style={{ position: "relative", width: "100%", aspectRatio: "210/297" }}>
+              {book.images.map((img) => (
+                <div key={img.source} style={{ display: "flex", justifyContent: "center", padding: "1rem" }}>
                   <Image
                     src={img.source}
                     alt={img.alt}
-                    fill
-                    style={{ objectFit: "contain" }}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 60vw"
+                    width={768}
+                    height={1086}
+                    style={{ objectFit: "contain", width: "100%", height: "auto", maxHeight: "80vh" }}
                   />
                 </div>
               ))}
