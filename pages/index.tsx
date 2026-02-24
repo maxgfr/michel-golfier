@@ -85,7 +85,7 @@ const Page: NextPage = () => {
         {/* Introduction */}
         <Box maxW="750px" mx="auto" mb={{ base: 10, md: 16 }} textAlign="center">
           <Text fontSize="md" lineHeight="tall" color="warmGray.700">
-            Attaché à mes racines Auvergnates, je suis l&rsquo;auteur de trois livres
+            Attaché à mes racines Auvergnates, je suis l&rsquo;auteur de quatre livres
             ayant tous le même dénominateur commun à savoir la vie locale
             d&rsquo;autrefois, remontant parfois le temps sur plusieurs siècles. Faute de
             n&rsquo;avoir pas su ou pu interroger nos anciens, nous n&rsquo;avons pas été
