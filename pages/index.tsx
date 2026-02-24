@@ -14,7 +14,7 @@ const Page: NextPage = () => {
     <>
       <SEO
         title="Michel Golfier, auteur auvergnat"
-        description="Attaché à mes racines Auvergnates, je suis l'auteur de trois livres ayant tous le même dénominateur commun à savoir la vie locale d'autrefois, remontant parfois le temps sur plusieurs siècles."
+        description="Attaché à mes racines Auvergnates, je suis l'auteur de quatres livres ayant tous le même dénominateur commun à savoir la vie locale d'autrefois, remontant parfois le temps sur plusieurs siècles."
         images={[
           { url: `${BASE_URL}/img/livre1.jpg`, width: 600, height: 850, alt: "L'Histoire d'un village du Puy-de-Dôme" },
           { url: `${BASE_URL}/img/livre2.jpg`, width: 600, height: 850, alt: "Jean-Baptiste Croizet, curé de Neschers" },
