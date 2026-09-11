@@ -5,7 +5,7 @@ import { Layout } from "../src/components/layout";
 import { BASE_URL } from "../src/config";
 import { SEO } from "../src/components/seo";
 import { personSchema, websiteSchema } from "../src/utils/jsonld";
-import { Book1992, Book1998, Book2017 } from "../src/data";
+import { Book1992, Book1998, Book2017, Book2023 } from "../src/data";
 
 const books = [Book1992, Book1998, Book2017];
 
@@ -14,25 +14,27 @@ const Page: NextPage = () => {
     <>
       <SEO
         title="Michel Golfier, auteur auvergnat"
-        description="Attaché à mes racines Auvergnates, je suis l'auteur de quatres livres ayant tous le même dénominateur commun à savoir la vie locale d'autrefois, remontant parfois le temps sur plusieurs siècles."
-        images={[
-          { url: `${BASE_URL}/img/livre1.jpg`, width: 600, height: 850, alt: "L'Histoire d'un village du Puy-de-Dôme" },
-          { url: `${BASE_URL}/img/livre2.jpg`, width: 600, height: 850, alt: "Jean-Baptiste Croizet, curé de Neschers" },
-          { url: `${BASE_URL}/img/livre3.jpg`, width: 600, height: 850, alt: "Notes sur Plauzat et ses villages voisins" },
-        ]}
+        description="Attaché à mes racines Auvergnates, je suis l'auteur de quatre livres consacrés à la vie locale d'autrefois, remontant le temps sur plusieurs siècles."
         jsonLd={[
           websiteSchema,
           personSchema,
           {
             "@type": "ItemList",
             name: "Ouvrages de Michel Golfier",
-            numberOfItems: books.length,
-            itemListElement: books.map((book, index) => ({
-              "@type": "ListItem",
-              position: index + 1,
-              url: `${BASE_URL}/ouvrages/${book.key}`,
-              name: book.title,
-            })),
+            numberOfItems: books.length + 1,
+            itemListElement: [
+              ...books.map((book, index) => ({
+                "@type": "ListItem",
+                position: index + 1,
+                url: `${BASE_URL}/ouvrages/${book.key}`,
+                name: book.title,
+              })),
+              {
+                "@type": "ListItem",
+                position: books.length + 1,
+                name: Book2023.title,
+              },
+            ],
           },
         ]}
       />
@@ -139,7 +141,7 @@ const Page: NextPage = () => {
           />
           <Book
             titleAs="h3"
-            title="L'Homme et son devenir trois siècles de notes prises en Auvergne et ailleurs."
+            title={`${Book2023.title}.`}
             summary={[
               "Cet ouvrage tire ses origines d'archives notariales sur l’Auvergne des XVIIème, XVIIIème et XIXème siècles, ainsi que sur diverses décisions de conseils municipaux du XIXème et début XXème siècle.",
               "Au cours de ce voyage, plusieurs thèmes sont alors abordés : L’Ancien Régime, la Révolution, l’industrialisation, le travail de la vigne, l’alcool et ses ravages dans la population, l’apprentissage sous l’Ancien Régime, l’enseignement (religieux et laïque), les deux guerres mondiales, la condition de la femme d’hier à aujourd’hui, de sa lente mais progressive indépendance, enfin reconnue comme un Être à part entière, prenant de plus en plus de responsabilité, au sein même de l’encadrement (cadres A dans la fonction publique, cadres supérieures dans le privé, patronnes de start-up, élues parlementaires, mais aussi présentes dans toutes les professions libérales.)",
@@ -148,7 +150,7 @@ const Page: NextPage = () => {
               "Afin d'acquérir un ou plusieurs exemplaires, contactez-moi via le formulaire de contact. Je vous répondrai dans les plus brefs délais.",
           ]}
             isReverse
-            image="/img/livre4.jpg"
+            image={Book2023.cover.source}
             href="/contact"
           />
         </Box>

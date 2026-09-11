@@ -6,6 +6,7 @@ import { SEO } from "../src/components/seo";
 import {
 	personSchema,
 	breadcrumbSchema,
+	websiteSchema,
 	WEBSITE_ID,
 	PERSON_ID,
 } from "../src/utils/jsonld";
@@ -29,6 +30,7 @@ const Page: NextPage = () => {
 				ogType="profile"
 				profile={{ firstName: "Michel", lastName: "Golfier" }}
 				jsonLd={[
+					websiteSchema,
 					{
 						"@type": "WebPage",
 						"@id": `${BASE_URL}/biographie#webpage`,

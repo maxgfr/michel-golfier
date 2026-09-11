@@ -17,7 +17,12 @@ import * as Yup from "yup";
 import { useState } from "react";
 import { BASE_URL } from "../src/config";
 import { SEO } from "../src/components/seo";
-import { WEBSITE_ID, breadcrumbSchema } from "../src/utils/jsonld";
+import {
+  WEBSITE_ID,
+  breadcrumbSchema,
+  personSchema,
+  websiteSchema,
+} from "../src/utils/jsonld";
 
 const FormSchema = Yup.object().shape({
   name: Yup.string()
@@ -98,6 +103,8 @@ const Page: NextPage = () => {
         description="Contactez-moi sur cette page pour plus d'informations."
         url={`${BASE_URL}/contact`}
         jsonLd={[
+          websiteSchema,
+          personSchema,
           {
             "@type": "ContactPage",
             "@id": `${BASE_URL}/contact#webpage`,

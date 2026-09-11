@@ -1,7 +1,28 @@
 import { GetServerSideProps } from "next";
+import { BASE_URL } from "../src/config";
 import { Book1992, Book1998, Book2017 } from "../src/data";
 
 const books = [Book1992, Book1998, Book2017];
+
+/**
+ * Dates de dernière modification réelle, à mettre à jour à la main quand le contenu
+ * d'une page change. Un `lastmod` recalculé à chaque requête ne veut rien dire et
+ * les moteurs finissent par l'ignorer.
+ */
+const LAST_MODIFIED: Record<string, string> = {
+  "/": "2026-02-24",
+  "/biographie": "2026-02-24",
+  "/contact": "2026-02-06",
+  "/ouvrages/l-histoire-de-neschers": "2026-02-06",
+  "/ouvrages/jean-baptiste-croizet": "2026-02-06",
+  "/ouvrages/notes-plauzat-villages-voisins": "2026-02-06",
+};
+
+const FALLBACK_LAST_MODIFIED = "2026-02-06";
+
+function lastmodFor(route: string): string {
+  return LAST_MODIFIED[route] ?? FALLBACK_LAST_MODIFIED;
+}
 
 export default function Sitemap() {
   // This component is never rendered - we only use getServerSideProps
@@ -9,39 +30,35 @@ export default function Sitemap() {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
-  const baseUrl = "https://www.michelgolfier.fr";
-  const currentDate = new Date().toISOString();
-
   const urls = [
     {
-      loc: baseUrl,
+      loc: BASE_URL,
       priority: "1.0",
-      lastmod: currentDate,
+      lastmod: lastmodFor("/"),
       changefreq: "weekly",
     },
     {
-      loc: `${baseUrl}/biographie`,
+      loc: `${BASE_URL}/biographie`,
       priority: "0.8",
-      lastmod: currentDate,
+      lastmod: lastmodFor("/biographie"),
       changefreq: "monthly",
     },
     {
-      loc: `${baseUrl}/contact`,
+      loc: `${BASE_URL}/contact`,
       priority: "0.5",
-      lastmod: currentDate,
+      lastmod: lastmodFor("/contact"),
       changefreq: "monthly",
     },
     ...books.map((book) => ({
-      loc: `${baseUrl}/ouvrages/${book.key}`,
+      loc: `${BASE_URL}/ouvrages/${book.key}`,
       priority: "0.9",
-      lastmod: currentDate,
+      lastmod: lastmodFor(`/ouvrages/${book.key}`),
       changefreq: "monthly",
     })),
   ];
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls
   .map(
     (url) => `  <url>

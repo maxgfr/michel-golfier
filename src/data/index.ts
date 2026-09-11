@@ -159,5 +159,24 @@ export const Book2017: Book = {
     { type: "Thing", name: "Histoire de France" },
   ],
   genre: ["Histoire"],
-  offerUrl: "https://www.amazon.fr/dp/B07B8KLS8M",
+  offerUrl: "https://www.amazon.fr/dp/B0CL5JG19D",
+};
+
+/**
+ * Ouvrage sans page dédiée : il n'a ni PDF en ligne, ni fiche presse, donc pas de
+ * route `/ouvrages/*` ni d'entrée au sitemap. Il figure malgré tout sur l'accueil
+ * et dans les données structurées, d'où ce type allégé.
+ */
+export type BookWithoutPage = {
+  title: string;
+  cover: BookImage;
+};
+
+export const Book2023: BookWithoutPage = {
+  title:
+    "L'Homme et son devenir trois siècles de notes prises en Auvergne et ailleurs",
+  cover: {
+    source: `/img/livre4.jpg`,
+    alt: "L'Homme et son devenir trois siècles de notes prises en Auvergne et ailleurs",
+  },
 };
