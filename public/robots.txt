@@ -1,6 +1,7 @@
 # *
 User-agent: *
 Allow: /
+Disallow: /api/
 
 # Sitemaps
 Sitemap: https://www.michelgolfier.fr/sitemap.xml

@@ -8,6 +8,13 @@ type OGImage = {
   height?: number;
 };
 
+const DEFAULT_IMAGE: OGImage = {
+  url: `${BASE_URL}/og-image.jpg`,
+  width: 1200,
+  height: 630,
+  alt: "Michel Golfier, auteur auvergnat, et les couvertures de ses quatre ouvrages",
+};
+
 type SEOProps = {
   title: string;
   description: string;
@@ -17,6 +24,7 @@ type SEOProps = {
   profile?: { firstName: string; lastName: string };
   book?: { releaseDate?: string; isbn?: string; tags?: string[] };
   jsonLd?: object[];
+  noIndex?: boolean;
 };
 
 export function SEO({
@@ -24,21 +32,30 @@ export function SEO({
   description,
   url = BASE_URL,
   ogType = "website",
-  images = [],
+  images,
   profile,
   book,
   jsonLd,
+  noIndex = false,
 }: SEOProps) {
+  const ogImages = images?.length ? images : [DEFAULT_IMAGE];
+
   return (
     <Head>
       <title>{title}</title>
       <meta name="description" content={description} />
-      <link rel="canonical" href={url} />
+      {/* Une page d'erreur n'a pas d'URL canonique : `url` vaut alors l'accueil, et
+          la déclarer reviendrait à annoncer aux moteurs que chaque 404 est l'accueil. */}
+      {noIndex ? (
+        <meta name="robots" content="noindex,follow" />
+      ) : (
+        <link rel="canonical" href={url} />
+      )}
 
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
-      {images[0] && <meta name="twitter:image" content={images[0].url} />}
+      <meta name="twitter:image" content={ogImages[0].url} />
 
       <meta property="og:site_name" content="Michel Golfier" />
       <meta property="og:locale" content="fr_FR" />
@@ -47,7 +64,7 @@ export function SEO({
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
 
-      {images.flatMap((img, i) => [
+      {ogImages.flatMap((img, i) => [
         <meta key={`img-${i}`} property="og:image" content={img.url} />,
         ...(img.alt
           ? [<meta key={`img-alt-${i}`} property="og:image:alt" content={img.alt} />]

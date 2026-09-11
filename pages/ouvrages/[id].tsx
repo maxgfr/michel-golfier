@@ -21,7 +21,15 @@ import { Layout } from "../../src/components/layout";
 import { SEO } from "../../src/components/seo";
 import { BASE_URL } from "../../src/config";
 import { type Book, Book1992, Book1998, Book2017 } from "../../src/data";
-import { PERSON_ID, WEBSITE_ID, breadcrumbSchema, entityToSchema } from "../../src/utils/jsonld";
+import {
+  PERSON_ID,
+  WEBSITE_ID,
+  breadcrumbSchema,
+  entityToSchema,
+  personSchema,
+  websiteSchema,
+} from "../../src/utils/jsonld";
+import { truncateAtWord } from "../../src/utils/text";
 
 const BookReader = dynamic(() => import("../../src/components/pdf"), {
   ssr: false,
@@ -77,7 +85,7 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
     <>
       <SEO
         title={`Michel Golfier | ${book.title}`}
-        description={plainDescription}
+        description={truncateAtWord(plainDescription)}
         url={`${BASE_URL}/ouvrages/${book.key}`}
         ogType="book"
         images={[book.cover, ...book.images].map(img => ({
@@ -90,6 +98,7 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
           tags: book.tags,
         }}
         jsonLd={[
+          websiteSchema,
           {
             "@type": "WebPage",
             "@id": `${BASE_URL}/ouvrages/${book.key}#webpage`,
@@ -130,6 +139,7 @@ const Page: NextPage<{ book: Book }> = ({ book }) => {
                 }
               : {}),
           },
+          personSchema,
           breadcrumbSchema([
             { name: "Accueil", item: BASE_URL },
             { name: book.title },
