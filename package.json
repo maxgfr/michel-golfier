@@ -20,7 +20,7 @@
     "formik": "^2.4.9",
     "framer-motion": "^12.33.0",
     "next": "^16.1.6",
-    "nodemailer": "^8.0.0",
+    "nodemailer": "^8.0.5",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-pdf": "^10.3.0",
