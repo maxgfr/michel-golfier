@@ -1,10 +1,10 @@
-import nodemailer from "nodemailer";
+import nodemailer, { type Transporter } from "nodemailer";
 import { ContactBody } from "../../pages/api/contact";
 import { generateMailTemplate, removeHtmlTags } from "../utils/mail";
 
 export class MailService {
   private static instance: MailService;
-  private transporter: nodemailer.Transporter;
+  private transporter: Transporter;
 
   protected constructor() {
     this.transporter = nodemailer.createTransport({
